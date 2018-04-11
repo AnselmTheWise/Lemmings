@@ -14,6 +14,11 @@ static int prevTime;
 static Game game; // This object represents our whole game
 
 
+static void foo2()
+{
+	//Foo2 test too observe the changes in github files
+}
+
 // If a key is pressed this callback is called
 
 static void keyboardDownCallback(unsigned char key, int x, int y)
