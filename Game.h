@@ -3,6 +3,7 @@
 
 
 #include "Scene.h"
+#include "MainMenu.h"
 
 
 // Game is a singleton (a class with a single instance) that represents our whole application
@@ -45,6 +46,8 @@ private:
 	                                  // we can have access at any time
 	int mouseX, mouseY;               // Mouse position
 	bool bLeftMouse, bRightMouse;     // Mouse button states
+
+	MainMenu mainMenu;
 
 };
 

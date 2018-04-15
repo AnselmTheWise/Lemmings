@@ -36,6 +36,15 @@ void Lemming::init(const glm::vec2 &initialPosition, ShaderProgram &shaderProgra
 		
 	sprite->changeAnimation(WALKING_RIGHT);
 	sprite->setPosition(initialPosition);
+	spritesheetIQ.loadFromFile("images/lemmingUI.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	spritesheetIQ.setMinFilter(GL_NEAREST);
+	spritesheetIQ.setMagFilter(GL_NEAREST);
+	yOffset = 3;
+	glm::vec2 initPos = initialPosition;
+	interactiveQuad = InteractiveQuad::createInteractiveQuad(glm::vec2(initPos.x, initPos.y + yOffset), glm::vec2(16, 16), glm::vec2(1./3., 1), &spritesheetIQ, &shaderProgram);
+	interactiveQuad->setOffsetIdle(glm::vec2(0.f, 0.f));
+	interactiveQuad->setOffsetHover(glm::vec2(1./3., 0.f));
+	interactiveQuad->setOffsetClick(glm::vec2(2. / 3., 0.f));
 }
 
 void Lemming::update(int deltaTime)
@@ -49,50 +58,64 @@ void Lemming::update(int deltaTime)
 	{
 	case FALLING_LEFT_STATE:
 		fall = collisionFloor(2);
-		if(fall > 0)
+		if (fall > 0) {
 			sprite->position() += glm::vec2(0, fall);
+			interactiveQuad->position() += glm::vec2(0, fall);
+		}
 		else
 			state = WALKING_LEFT_STATE;
 		break;
 	case FALLING_RIGHT_STATE:
 		fall = collisionFloor(2);
-		if(fall > 0)
+		if (fall > 0) {
 			sprite->position() += glm::vec2(0, fall);
+			interactiveQuad->position() += glm::vec2(0, fall);
+		}
 		else
 			state = WALKING_RIGHT_STATE;
 		break;
 	case WALKING_LEFT_STATE:
 		sprite->position() += glm::vec2(-1, -1);
+		interactiveQuad->position() += glm::vec2(-1, -1);
 		if(collision())
 		{
 			sprite->position() -= glm::vec2(-1, -1);
+			interactiveQuad->position() -= glm::vec2(-1, -1);
 			sprite->changeAnimation(WALKING_RIGHT);
 			state = WALKING_RIGHT_STATE;
 		}
 		else
 		{
 			fall = collisionFloor(3);
-			if(fall > 0)
+			if (fall > 0) {
 				sprite->position() += glm::vec2(0, 1);
-			if(fall > 1)
+				interactiveQuad->position() += glm::vec2(0, 1);
+			}
+			if (fall > 1) {
 				sprite->position() += glm::vec2(0, 1);
+				interactiveQuad->position() += glm::vec2(0, 1);
+			}
 			if(fall > 2)
 				state = FALLING_LEFT_STATE;
 		}
 		break;
 	case WALKING_RIGHT_STATE:
 		sprite->position() += glm::vec2(1, -1);
+		interactiveQuad->position() += glm::vec2(1, -1);
 		if(collision())
 		{
 			sprite->position() -= glm::vec2(1, -1);
+			interactiveQuad->position() -= glm::vec2(1, -1);
 			sprite->changeAnimation(WALKING_LEFT);
 			state = WALKING_LEFT_STATE;
 		}
 		else
 		{
 			fall = collisionFloor(3);
-			if(fall < 3)
+			if (fall < 3) {
 				sprite->position() += glm::vec2(0, fall);
+				interactiveQuad->position() += glm::vec2(0, fall);
+			}
 			else
 				state = FALLING_RIGHT_STATE;
 		}
@@ -103,11 +126,16 @@ void Lemming::update(int deltaTime)
 void Lemming::render()
 {
 	sprite->render();
+	interactiveQuad->render();
 }
 
 void Lemming::setMapMask(VariableTexture *mapMask)
 {
 	mask = mapMask;
+}
+
+void Lemming::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton) {
+	interactiveQuad->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 }
 
 int Lemming::collisionFloor(int maxFall)

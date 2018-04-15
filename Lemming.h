@@ -3,6 +3,7 @@
 
 
 #include "Sprite.h"
+#include "InteractiveQuad.h"
 #include "VariableTexture.h"
 
 
@@ -19,6 +20,8 @@ public:
 	void render();
 	
 	void setMapMask(VariableTexture *mapMask);
+
+	void mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton);
 	
 private:
 	int collisionFloor(int maxFall);
@@ -31,9 +34,12 @@ private:
 	};
 
 	LemmingState state;
-	Texture spritesheet;
+	Texture spritesheet, spritesheetIQ;
 	Sprite *sprite;
+	InteractiveQuad *interactiveQuad;
 	VariableTexture *mask;
+
+	int yOffset; //Offset so the InteractiveQuad covers all the Lemming in the center
 
 };
 

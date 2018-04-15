@@ -68,6 +68,8 @@ void Scene::render()
 
 void Scene::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton)
 {
+	lemming.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
+
 	if(bLeftButton)
 		eraseMask(mouseX, mouseY);
 	else if(bRightButton)
