@@ -19,6 +19,8 @@ Scene::~Scene()
 
 void Scene::init()
 {
+	interface1.init(); 
+
 	glm::vec2 geom[2] = {glm::vec2(0.f, 0.f), glm::vec2(float(CAMERA_WIDTH), float(CAMERA_HEIGHT))};
 	glm::vec2 texCoords[2] = {glm::vec2(120.f / 512.0, 0.f), glm::vec2((120.f + 320.f) / 512.0f, 160.f / 256.0f)};
 
@@ -64,11 +66,14 @@ void Scene::render()
 	modelview = glm::mat4(1.0f);
 	simpleTexProgram.setUniformMatrix4f("modelview", modelview);
 	lemming.render();
+
+	interface1.render(); 	
 }
 
 void Scene::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton)
 {
 	lemming.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
+	interface1.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton); 
 
 	if(bLeftButton)
 		eraseMask(mouseX, mouseY);

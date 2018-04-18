@@ -30,6 +30,8 @@ public:
 	void setOffsetHover(const glm::vec2 &frame);
 	void setOffsetClick(const glm::vec2 &frame);
 
+	bool isClicked();
+
 	void mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse);
 
 	void setPosition(const glm::vec2 &newPos);

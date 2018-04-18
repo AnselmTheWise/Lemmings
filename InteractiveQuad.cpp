@@ -120,6 +120,10 @@ void InteractiveQuad::mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse
 	}
 }
 
+bool InteractiveQuad::isClicked() {
+	return clicked;
+}
+
 void InteractiveQuad::setPosition(const glm::vec2 &newPos)
 {
 	pos = newPos;
