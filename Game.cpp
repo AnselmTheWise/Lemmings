@@ -9,6 +9,7 @@ void Game::init()
 	bLeftMouse = bRightMouse = false;
 	glClearColor(0.3f, 0.3f, 0.3f, 1.0f);
 	scene.init();
+	//mainMenu.init();
 }
 
 bool Game::update(int deltaTime)
@@ -22,6 +23,7 @@ void Game::render()
 {
 	glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT);
 	scene.render();
+	//mainMenu.render();
 }
 
 void Game::keyPressed(int key)
@@ -51,6 +53,7 @@ void Game::mouseMove(int x, int y)
 	mouseX = x;
 	mouseY = y;
 	scene.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+	//mainMenu.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
 }
 
 void Game::mousePress(int button)
@@ -59,11 +62,13 @@ void Game::mousePress(int button)
 	{
 		bLeftMouse = true;
 		scene.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+		//mainMenu.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
 	}
 	else if(button == GLUT_RIGHT_BUTTON)
 	{
 		bRightMouse = true;
 		scene.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+		//mainMenu.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
 	}
 }
 
