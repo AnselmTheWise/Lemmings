@@ -5,7 +5,9 @@
 #include <glm/glm.hpp>
 #include "ShaderProgram.h"
 #include "MaskedTexturedQuad.h"
+#include "TexturedQuad.h"
 #include "Lemming.h"
+#include "GUI.h"
 
 
 // Scene contains all the entities of our game.
@@ -33,13 +35,15 @@ private:
 	void applyMask(int mouseX, int mouseY);
 
 private:
-	Texture colorTexture;
+	TexturedQuad* barQuad;
+	Texture colorTexture, interfaceBar;
 	VariableTexture maskTexture;
 	MaskedTexturedQuad *map;
 	ShaderProgram simpleTexProgram, maskedTexProgram;
 	float currentTime;
 	glm::mat4 projection;
 	Lemming lemming;
+	GUI interface1;
 
 };
 

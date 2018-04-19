@@ -15,6 +15,7 @@
     <ClInclude Include="common_defs.h" />
     <ClInclude Include="Game.h" />
     <ClInclude Include="TextScreen.h" />
+    <ClInclude Include="GUI.h" />
     <ClInclude Include="InteractiveQuad.h" />
     <ClInclude Include="Lemming.h" />
     <ClInclude Include="MainMenu.h" />
@@ -40,6 +41,7 @@
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
+    <ClCompile Include="GUI.cpp" />
     <ClCompile Include="Sprite.cpp" />
     <ClCompile Include="Texture.cpp" />
     <ClCompile Include="TexturedQuad.cpp" />
