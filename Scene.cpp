@@ -81,6 +81,10 @@ void Scene::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButt
 		applyMask(mouseX, mouseY);
 }
 
+int Scene::getStatus() {
+	return 0;
+}
+
 void Scene::eraseMask(int mouseX, int mouseY)
 {
 	int posX, posY;

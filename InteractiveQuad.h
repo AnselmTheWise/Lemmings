@@ -51,6 +51,7 @@ private:
 	glm::vec2 size;
 	glm::vec2 texCoordDispl;
 	bool clicked = false;
+	bool pressed = false;
 
 	bool isInsideQuad(int x, int y);
 
