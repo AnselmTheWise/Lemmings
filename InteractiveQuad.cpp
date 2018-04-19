@@ -87,7 +87,7 @@ void InteractiveQuad::mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse
 		if (bLeftMouse == true) {
 			//cout << "The button is clicked" << endl;
 			//Button clicked
-			clicked = true;
+			pressed = true;
 			if (validFrames[2] == true) {
 				//cout << "Valid frame, changing to clicked texture" << endl;
 				texCoordDispl = frameOrigins[2];
@@ -97,7 +97,10 @@ void InteractiveQuad::mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse
 			//cout << "Button not clicked" << endl;
 			//Button not clicked
 			//Button may be released
-			clicked = false;
+			if (pressed) {
+				clicked = true;
+			}
+			pressed = false;
 			if (validFrames[1] == true) {
 				//cout << "Valid frame, changing to hover texture" << endl;
 				texCoordDispl = frameOrigins[1];
@@ -109,7 +112,7 @@ void InteractiveQuad::mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse
 		//cout << "Outside the quad" << endl;
 		if (bLeftMouse == false) {
 			//cout << "Button not clicked" << endl;
-			clicked = false;
+			pressed = false;
 			if (validFrames[0] == true) {
 				//cout << "Valid frame, changing to idle texture" << endl;
 				texCoordDispl = frameOrigins[0];
@@ -118,6 +121,12 @@ void InteractiveQuad::mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse
 		
 
 	}
+}
+
+bool InteractiveQuad::isClicked() {
+	bool c = clicked;
+	clicked = false;
+	return c;
 }
 
 void InteractiveQuad::setPosition(const glm::vec2 &newPos)

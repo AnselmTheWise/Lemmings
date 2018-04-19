@@ -35,12 +35,30 @@ void MainMenu::init()
 	playButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &playButtonTexture, &simpleTexProgram);
 	playButton->setOffsetIdle(glm::vec2(0.f, 0.f));
 	playButton->setOffsetHover(glm::vec2(0.5f, 0.f));
+	instructionsButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 20), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &playButtonTexture, &simpleTexProgram);
+	instructionsButton->setOffsetIdle(glm::vec2(0.f, 0.f));
+	instructionsButton->setOffsetHover(glm::vec2(0.5f, 0.f));
+
+	renderingElement = MAIN_MENU;
+	playMenu.init();
+	instructions.init();
 }
 
 void MainMenu::render()
 {
-	glm::mat4 modelview;
+	if (renderingElement == MAIN_MENU) {
+		selfRender();
+	}
+	else if (renderingElement == PLAY_MENU) {
+		playMenu.render();
+	}
+	else if (renderingElement == INSTRUCTIONS) {
+		instructions.render();
+	}
+}
 
+void MainMenu::selfRender() {
+	glm::mat4 modelview;
 	simpleTexProgram.use();
 	simpleTexProgram.setUniformMatrix4f("projection", projection);
 	simpleTexProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
@@ -49,11 +67,48 @@ void MainMenu::render()
 	simpleTexProgram.setUniform2f("texCoordDispl", 0, 0);
 	backgroundQuad->render(backgroundTexture);
 	playButton->render();
+	instructionsButton->render();
 }
 
 void MainMenu::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton)
 {
-	playButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
+	if (renderingElement == MAIN_MENU) {
+		playButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
+		instructionsButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
+	}
+	else if (renderingElement == PLAY_MENU) {
+		playMenu.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
+	}
+	else if (renderingElement == INSTRUCTIONS) {
+		instructions.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
+	}
+}
+
+int MainMenu::getStatus() {
+	if (renderingElement == MAIN_MENU) {
+		if (playButton->isClicked()) {
+			renderingElement = PLAY_MENU;
+		}
+		else if (instructionsButton->isClicked()) {
+			renderingElement = INSTRUCTIONS;
+		}
+		return 0;
+	}
+	else if (renderingElement == PLAY_MENU) {
+		int status = playMenu.getStatus();
+		if (status == 4) {
+			renderingElement = MAIN_MENU;
+			return 0;
+		}
+		return status;
+	}
+	else if (renderingElement == INSTRUCTIONS) {
+		int status = instructions.getStatus();
+		if (status == 1) {
+			renderingElement = MAIN_MENU;
+		}
+		return 0;
+	}
 }
 
 void MainMenu::initShaders()

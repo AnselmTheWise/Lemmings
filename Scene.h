@@ -25,6 +25,8 @@ public:
 	
 	void mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton);
 
+	int getStatus();
+
 private:
 	void initShaders();
 	void eraseMask(int mouseX, int mouseY);

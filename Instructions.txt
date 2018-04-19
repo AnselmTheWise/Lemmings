@@ -1,0 +1,19 @@
+Instructions:
+Your mission here consists on leading all the little lemmings to a way out.
+In order to do that, you must examine the world around them, and,
+by selecting and one power of the ones available in the bar below
+and one of the lemmings, order them to do things like: climbing, digging,
+or stopping each other.
+If you give up, you can always click the explosion button to start again.
+If you get bored, speed up using the appropiate button.
+If you get stressed, pause the game with the button, too.
+Next, you have a brief description of the different abilities you can give
+to a lemming:
+- Blocker: blocks the way for other lemmings
+- Digger: digs a vertical tunnel
+- Basher: digs a horizontal tunnel
+- Climber: climbs up walls
+- Builder: builds a diagonal bridge for a certain amount of time
+- Portal placer: places a portal rigth when told to do so. That portal will be connected to the next or previous
+ selected portal (a maximum of two per level can be placed).
+

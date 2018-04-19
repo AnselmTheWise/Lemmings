@@ -57,6 +57,12 @@
     <ClInclude Include="TexturedQuad.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="PlayMenu.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="Instructions.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp">
@@ -96,6 +102,12 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TexturedQuad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="PlayMenu.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="Instructions.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

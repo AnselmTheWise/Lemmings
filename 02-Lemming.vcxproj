@@ -14,10 +14,12 @@
     <ClInclude Include="AnimKeyframes.h" />
     <ClInclude Include="common_defs.h" />
     <ClInclude Include="Game.h" />
+    <ClInclude Include="Instructions.h" />
     <ClInclude Include="InteractiveQuad.h" />
     <ClInclude Include="Lemming.h" />
     <ClInclude Include="MainMenu.h" />
     <ClInclude Include="MaskedTexturedQuad.h" />
+    <ClInclude Include="PlayMenu.h" />
     <ClInclude Include="Scene.h" />
     <ClInclude Include="Shader.h" />
     <ClInclude Include="ShaderProgram.h" />
@@ -28,11 +30,13 @@
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
+    <ClCompile Include="Instructions.cpp" />
     <ClCompile Include="InteractiveQuad.cpp" />
     <ClCompile Include="Lemming.cpp" />
     <ClCompile Include="main.cpp" />
     <ClCompile Include="MainMenu.cpp" />
     <ClCompile Include="MaskedTexturedQuad.cpp" />
+    <ClCompile Include="PlayMenu.cpp" />
     <ClCompile Include="Scene.cpp" />
     <ClCompile Include="Shader.cpp" />
     <ClCompile Include="ShaderProgram.cpp" />
