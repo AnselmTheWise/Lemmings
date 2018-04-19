@@ -27,7 +27,7 @@ void TextScreen::init(string kind)
 		backgroundTexture.loadFromFile("images/Instructions.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	}
 	else if (kind == "Credits") {
-		backgroundTexture.loadFromFile("images/Instructions.png", TEXTURE_PIXEL_FORMAT_RGBA);
+		backgroundTexture.loadFromFile("images/Credits.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	}
 	backgroundTexture.setMagFilter(GL_NEAREST);
 	backgroundTexture.setMinFilter(GL_NEAREST);
