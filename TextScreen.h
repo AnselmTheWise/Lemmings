@@ -1,5 +1,5 @@
-#ifndef _INSTRUCTIONS_INCLUDE
-#define _INSTRUCTIONS_INCLUDE
+#ifndef _TEXTSCREEN_INCLUDE
+#define _TEXTSCREEN_INCLUDE
 
 
 #include <glm/glm.hpp>
@@ -9,14 +9,14 @@
 #include "InteractiveQuad.h"
 
 
-class Instructions
+class TextScreen
 {
 
 public:
-	Instructions();
-	~Instructions();
+	TextScreen();
+	~TextScreen();
 
-	void init();
+	void init(string kind);
 	void render();
 
 	void mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton);

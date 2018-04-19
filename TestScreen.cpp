@@ -2,19 +2,19 @@
 #include <cmath>
 #include <algorithm>
 #include <glm/gtc/matrix_transform.hpp>
-#include "Instructions.h"
+#include "TextScreen.h"
 
 
-Instructions::Instructions()
+TextScreen::TextScreen()
 {
 }
 
-Instructions::~Instructions()
+TextScreen::~TextScreen()
 {
 }
 
 
-void Instructions::init()
+void TextScreen::init(string kind)
 {
 	initShaders();
 
@@ -23,7 +23,12 @@ void Instructions::init()
 
 	backgroundQuad = TexturedQuad::createTexturedQuad(geom, texCoords, simpleTexProgram);
 
-	backgroundTexture.loadFromFile("images/Instructions.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	if (kind == "Instructions") {
+		backgroundTexture.loadFromFile("images/Instructions.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	}
+	else if (kind == "Credits") {
+		backgroundTexture.loadFromFile("images/Instructions.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	}
 	backgroundTexture.setMagFilter(GL_NEAREST);
 	backgroundTexture.setMinFilter(GL_NEAREST);
 
@@ -31,13 +36,13 @@ void Instructions::init()
 
 	backButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
 
-	backButton = InteractiveQuad::createInteractiveQuad(glm::vec2(750.f*CAMERA_WIDTH / 960.f, 400.f*CAMERA_HEIGHT / 480.f), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &backButtonTexture, &simpleTexProgram);
+	backButton = InteractiveQuad::createInteractiveQuad(glm::vec2(600.f*CAMERA_WIDTH / 960.f, 400.f*CAMERA_HEIGHT / 480.f), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &backButtonTexture, &simpleTexProgram);
 	backButton->setOffsetIdle(glm::vec2(0.f, 0.f));
 	backButton->setOffsetHover(glm::vec2(0.5f, 0.f));
 
 }
 
-void Instructions::render()
+void TextScreen::render()
 {
 	glm::mat4 modelview;
 	simpleTexProgram.use();
@@ -50,19 +55,19 @@ void Instructions::render()
 	backButton->render();
 }
 
-void Instructions::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton)
+void TextScreen::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton)
 {
 	backButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 }
 
-int Instructions::getStatus() {
+int TextScreen::getStatus() {
 	if (backButton->isClicked())
 		return 1;
 
 	return 0;
 }
 
-void Instructions::initShaders()
+void TextScreen::initShaders()
 {
 	Shader vShader, fShader;
 

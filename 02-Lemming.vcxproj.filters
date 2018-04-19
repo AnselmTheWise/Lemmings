@@ -60,7 +60,7 @@
     <ClInclude Include="PlayMenu.h">
       <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="Instructions.h">
+    <ClInclude Include="TextScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -107,7 +107,7 @@
     <ClCompile Include="PlayMenu.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
-    <ClCompile Include="Instructions.cpp">
+    <ClCompile Include="TestScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

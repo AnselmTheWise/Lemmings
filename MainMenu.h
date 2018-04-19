@@ -8,7 +8,7 @@
 #include "Texture.h"
 #include "InteractiveQuad.h"
 #include "PlayMenu.h"
-#include "Instructions.h"
+#include "TextScreen.h"
 
 
 class MainMenu
@@ -37,10 +37,10 @@ private:
 	glm::mat4 projection;
 	InteractiveQuad* playButton;
 	InteractiveQuad* instructionsButton;
+	InteractiveQuad* creditsButton;
 	InteractiveQuad* exitButton;
 	PlayMenu playMenu;
-	Instructions instructions;
-	//Credits credits;
+	TextScreen instructions, credits;
 
 	enum RENDERING_ELEMENT {MAIN_MENU, PLAY_MENU, INSTRUCTIONS, CREDITS};
 
