@@ -62,7 +62,7 @@ void Digit::changeDigit(int desiredNum) {
 	if (desiredNum > -1 && desiredNum < 10) {
 		digitSprite->changeAnimation(numbers[desiredNum]); 
 	}
-	else cout << "Invalid num" << endl; 
+	else cout << "Invalid num: " << desiredNum << endl; 
 }
 
 

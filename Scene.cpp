@@ -67,7 +67,7 @@ void Scene::init()
 	renderingElement = SCENE;
 	selectedLemming = -1;
 	buttonClicked = -1;
-	powersLeft = { 10, 10, 10, 10, 10, 0 };
+	powersLeft = { 0, 1, 1, 0, 0, 0 };
 	interface1.updatePowers(powersLeft);
 	interface1.lemmingsLeft(lemmingsToArrive);
 	interface1.maxTime(2 * 60 * 1000);

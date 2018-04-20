@@ -30,17 +30,33 @@ void MainMenu::init()
 
 	projection = glm::ortho(0.f, float(CAMERA_WIDTH - 1), float(CAMERA_HEIGHT - 1), 0.f);
 
-	playButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
+	playButtonTexture.loadFromFile("images/playButton.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	playButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &playButtonTexture, &simpleTexProgram);
+	playButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10), glm::vec2(CAMERA_WIDTH / 5.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &playButtonTexture, &simpleTexProgram);
 	playButton->setOffsetIdle(glm::vec2(0.f, 0.f));
-	playButton->setOffsetHover(glm::vec2(0.5f, 0.f));
-	instructionsButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 20), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &playButtonTexture, &simpleTexProgram);
+	playButton->setOffsetHover(glm::vec2(1.f/3.f, 0.f));
+	playButton->setOffsetClick(glm::vec2(2.f/3.f, 0.f));
+
+	instructionsButtonTexture1.loadFromFile("images/instructionsButton.png", TEXTURE_PIXEL_FORMAT_RGBA);
+
+	instructionsButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 20), glm::vec2(CAMERA_WIDTH / 5.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &instructionsButtonTexture1, &simpleTexProgram);
 	instructionsButton->setOffsetIdle(glm::vec2(0.f, 0.f));
-	instructionsButton->setOffsetHover(glm::vec2(0.5f, 0.f));
-	creditsButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 40), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &playButtonTexture, &simpleTexProgram);
+	instructionsButton->setOffsetHover(glm::vec2(1.f/3.f, 0.f));
+	instructionsButton->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
+
+	creditButtonTexture.loadFromFile("images/creditsButton.png", TEXTURE_PIXEL_FORMAT_RGBA); 
+
+	creditsButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 40), glm::vec2(CAMERA_WIDTH / 5.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &creditButtonTexture, &simpleTexProgram);
 	creditsButton->setOffsetIdle(glm::vec2(0.f, 0.f));
-	creditsButton->setOffsetHover(glm::vec2(0.5f, 0.f));
+	creditsButton->setOffsetHover(glm::vec2(1.f / 3.f , 0.f));
+	creditsButton->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
+
+	exitButtonTexture.loadFromFile("images/exitButton.png", TEXTURE_PIXEL_FORMAT_RGBA);
+
+	exitButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 60), glm::vec2(CAMERA_WIDTH / 5.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &exitButtonTexture, &simpleTexProgram);
+	exitButton->setOffsetIdle(glm::vec2(0.f, 0.f));
+	exitButton->setOffsetHover(glm::vec2(1.f / 3.f, 0.f));
+	exitButton->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
 
 	renderingElement = MAIN_MENU;
 	playMenu.init();
@@ -77,6 +93,7 @@ void MainMenu::selfRender() {
 	playButton->render();
 	instructionsButton->render();
 	creditsButton->render();
+	exitButton->render(); 
 }
 
 void MainMenu::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton)
@@ -85,6 +102,7 @@ void MainMenu::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightB
 		playButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 		instructionsButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 		creditsButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
+		exitButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 	}
 	else if (renderingElement == PLAY_MENU) {
 		playMenu.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
@@ -107,6 +125,9 @@ int MainMenu::getStatus() {
 		}
 		else if (creditsButton->isClicked()) {
 			renderingElement = CREDITS;
+		}
+		else if (exitButton->isClicked()) {
+			return 4;
 		}
 		return 0;
 	}
