@@ -72,6 +72,13 @@ unsigned int x = 0;
 
 void Scene::update(int deltaTime)
 {
+	interface1.update(deltaTime);
+	if (interface1.getSpeedState() == 1) {
+		deltaTime = 0;
+	}
+	else if (interface1.getSpeedState() == 2) {
+		deltaTime *= 5;
+	}
 	if (renderingElement == SCENE) {
 		currentTime += deltaTime;
 		if (lemmingsSpawned < lemmingsToSpawn && currentTime >(24.f / 30.f) * 1000 && currentTime - lastTimeLemmingSpawned > 2000) {

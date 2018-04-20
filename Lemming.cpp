@@ -185,6 +185,7 @@ void Lemming::update(int deltaTime)
 		}
 		break;
 	case EXITING_STATE:
+		cout << "EXIT" << endl;
 		timeExiting += deltaTime;
 		exitSprite->update(deltaTime);
 		if (timeExiting > 800*(12.f/30.f)) {
@@ -202,7 +203,7 @@ int Lemming::getStatus() {
 
 void Lemming::render()
 {
-	if (state == EXITING) {
+	if (state == EXITING_STATE) {
 		exitSprite->render();
 	}
 	else if (state == FALLING_RIGHT_STATE || state == FALLING_LEFT_STATE) {
