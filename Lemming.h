@@ -32,22 +32,30 @@ public:
 private:
 	int collisionFloor(int maxFall);
 	bool collision();
+	bool collisionTest(string way, int dist);
 	void addBlocking();
 	void digMask();
+	void bashMask(string way);
+	bool canClimb(string way);
 	
 private:
 	enum LemmingState
 	{
-		WALKING_LEFT_STATE, WALKING_RIGHT_STATE, FALLING_LEFT_STATE, FALLING_RIGHT_STATE, STOPPING_STATE, DIGGING_STATE, EXITING_STATE
+		WALKING_LEFT_STATE, WALKING_RIGHT_STATE, FALLING_LEFT_STATE, FALLING_RIGHT_STATE, STOPPING_STATE, DIGGING_STATE, 
+		BASHING_LEFT_STATE, BASHING_RIGHT_STATE, CLIMBING_LEFT_STATE, CLIMBING_RIGHT_STATE, WALKING_LEFT_TO_CLIMB_STATE,
+		WALKING_RIGHT_TO_CLIMB_STATE, EXITING_STATE
 	};
 
 	LemmingState state;
-	Texture spritesheet, spritesheetIQ, exitSpritesheet, fallingSpritesheet, stoppingSpritesheet, diggingSpritesheet;
+	Texture spritesheet, spritesheetIQ, exitSpritesheet, fallingSpritesheet, stoppingSpritesheet, diggingSpritesheet, bashingSpritesheet,
+		climbingSpritesheet;
 	Sprite *sprite;
 	Sprite *exitSprite;
 	Sprite *fallingSprite;
 	Sprite *stoppingSprite;
 	Sprite *diggingSprite;
+	Sprite *bashingSprite;
+	Sprite *climbingSprite;
 	InteractiveQuad *interactiveQuad;
 	VariableTexture *mask;
 
