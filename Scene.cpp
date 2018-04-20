@@ -117,7 +117,7 @@ void Scene::update(int deltaTime)
 					renderingElement = LOSE;
 					endScreen.init("Lose");
 				}
-				if (nLemmings == 0 && lemmingsArrived > lemmingsToArrive) {
+				if ((nLemmings == 0 || currentTime > 2*60*1000) && lemmingsArrived > lemmingsToArrive) {
 					renderingElement = WIN;
 					endScreen.init("Win");
 				}
