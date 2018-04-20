@@ -8,6 +8,7 @@
 #include "TexturedQuad.h"
 #include "InteractiveQuad.h"
 #include "Sprite.h"
+#include "Digit.h"
 
 
 
@@ -21,6 +22,8 @@ public:
 	void init();
 	void render();
 	void update(int deltaTime); 
+
+	void setTime(float currentTime); 
 
 	void mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton);
 
@@ -37,11 +40,17 @@ private:
 	};
 
 	enum TEXT {
-		NONE, STOPPERT, DIGGERT, BASHERT, CLIMBERT, BUILDERT, SURRENDERT, PLAYPAUSET, FASTT 
+		NONE, STOPPERT, DIGGERT, BASHERT, CLIMBERT, BUILDERT, SURRENDERT, PLAYPAUSET, FASTT, SCORE, TIME, LEVEL, IN
 	};
 
-	Texture helpSheet; 
-	Sprite *helpSprite; 
+	Digit stopperNumber, diggerNumber, basherNumber, climberNumber, builderNumber; 
+	Digit time3, time2, time1, time0; 
+	Digit lemmingsleft1, lemmingsleft0; 
+	Digit score3, score2, score1, score0; 
+	Digit level; 
+
+	Texture helpSheet, scoreSheet, timeSheet, levelSheet, inSheet; 
+	Sprite *helpSprite, *scoreSprite, *timeSprite, *levelSprite, *inSprite; 
 
 	Texture stopperSheet, diggerSheet, basherSheet, climberSheet, builderSheet, explosionSheet, playPauseSheet, fastSheet;
 	Sprite *stopperSprite, *diggerSprite, *basherSprite, *climberSprite, *builderSprite, *explosionSprite, *playPauseSprite, *fastSprite;

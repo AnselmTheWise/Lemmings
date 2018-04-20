@@ -24,12 +24,39 @@ void GUI::init()
 
 	float coordToPixel = 480.f / float(CAMERA_HEIGHT);
 
+	stopperNumber.init(glm::vec2(22.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+	diggerNumber.init(glm::vec2(72.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+	basherNumber.init(glm::vec2(122.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+	climberNumber.init(glm::vec2(172.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+	builderNumber.init(glm::vec2(222.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+
+	float offset = 8.f; 
+
+	time3.init(glm::vec2((840.f+offset) / coordToPixel, (-35.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(8, 8));
+	time2.init(glm::vec2((862.f+offset) / coordToPixel, (-35.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(8, 8));
+	time1.init(glm::vec2((894.f+offset) / coordToPixel, (-35.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(8, 8));
+	time0.init(glm::vec2((916.f+offset) / coordToPixel, (-35.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(8, 8));
+
+	float offset1 = -8.f; 
+	lemmingsleft1.init(glm::vec2((800.f + offset1) / coordToPixel, (-35.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(8, 8));
+	lemmingsleft1.changeDigit(3); 
+	lemmingsleft0.init(glm::vec2((822.f + offset1) / coordToPixel, (-35.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(8, 8));
+	lemmingsleft0.changeDigit(3); 
+
+	float offset2 = 14.f; 
+	score3.init(glm::vec2((886.f+offset2) / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+	score2.init(glm::vec2((898.f+offset2) / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+	score1.init(glm::vec2((910.f+offset2) / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+	score0.init(glm::vec2((922.f+offset2) / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+
+	level.init(glm::vec2(810.f / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+
 	glm::vec2 geom[2] = { glm::vec2(0.f, (-90.f / coordToPixel) + float(CAMERA_HEIGHT)) , glm::vec2(float(CAMERA_WIDTH), float(CAMERA_HEIGHT)) };
 	glm::vec2 texCoords[2] = { glm::vec2(0.f, 0.f), glm::vec2(1.f, 1.f) };
 
 	barQuad = TexturedQuad::createTexturedQuad(geom, texCoords, simpleTexProgram);
 
-	interfaceBar.loadFromFile("images/barTest3.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	interfaceBar.loadFromFile("images/barTest4.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	interfaceBar.setMinFilter(GL_NEAREST);
 	interfaceBar.setMagFilter(GL_NEAREST);
 
@@ -107,7 +134,7 @@ void GUI::init()
 	basherButton->setOffsetHover(glm::vec2(1.f / 3.f, 0.f));
 	basherButton->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
 
-	basherSheet.loadFromFile("images/basher2.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	basherSheet.loadFromFile("images/basher2a.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	basherSheet.setMinFilter(GL_NEAREST);
 	basherSheet.setMagFilter(GL_NEAREST);
 
@@ -232,6 +259,57 @@ void GUI::init()
 	helpSprite->changeAnimation(STOPPERT);
 	helpSprite->setPosition(glm::vec2(8.f / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)));
 
+	scoreSheet.loadFromFile("images/score.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	scoreSheet.setMinFilter(GL_NEAREST);
+	scoreSheet.setMagFilter(GL_NEAREST);
+
+	scoreSprite = Sprite::createSprite(glm::ivec2(20, 4), glm::vec2(1.0, 1.0), &scoreSheet, &simpleTexProgram);
+	scoreSprite->setNumberAnimations(16);
+
+	scoreSprite->setAnimationSpeed(SCORE, 1);
+	scoreSprite->addKeyframe(SCORE, glm::vec2(0.0f, 0.0f));
+
+	scoreSprite->changeAnimation(SCORE);
+	scoreSprite->setPosition(glm::vec2(838.f / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)));
+
+	timeSheet.loadFromFile("images/time.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	timeSheet.setMinFilter(GL_NEAREST);
+	timeSheet.setMagFilter(GL_NEAREST);
+
+	timeSprite = Sprite::createSprite(glm::ivec2(20, 4), glm::vec2(1.0, 1.0), &timeSheet, &simpleTexProgram);
+	timeSprite->setNumberAnimations(16);
+
+	timeSprite->setAnimationSpeed(TIME, 1);
+	timeSprite->addKeyframe(TIME, glm::vec2(0.0f, 0.0f));
+
+	timeSprite->changeAnimation(TIME);
+	timeSprite->setPosition(glm::vec2(870.f / coordToPixel, (-55.f / coordToPixel) + float(CAMERA_HEIGHT)));
+
+	levelSheet.loadFromFile("images/level.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	levelSheet.setMinFilter(GL_NEAREST);
+	levelSheet.setMagFilter(GL_NEAREST);
+
+	levelSprite = Sprite::createSprite(glm::ivec2(20, 4), glm::vec2(1.0, 1.0), &levelSheet, &simpleTexProgram);
+	levelSprite->setNumberAnimations(16);
+
+	levelSprite->setAnimationSpeed(LEVEL, 1);
+	levelSprite->addKeyframe(LEVEL, glm::vec2(0.0f, 0.0f));
+
+	levelSprite->changeAnimation(LEVEL);
+	levelSprite->setPosition(glm::vec2(755.f / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)));
+
+	inSheet.loadFromFile("images/in.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	inSheet.setMinFilter(GL_NEAREST);
+	inSheet.setMagFilter(GL_NEAREST);
+
+	inSprite = Sprite::createSprite(glm::ivec2(10, 4), glm::vec2(1.0, 1.0), &inSheet, &simpleTexProgram);
+	inSprite->setNumberAnimations(16);
+
+	inSprite->setAnimationSpeed(IN, 1);
+	inSprite->addKeyframe(IN, glm::vec2(0.0f, 0.0f));
+
+	inSprite->changeAnimation(IN); 
+	inSprite->setPosition(glm::vec2(801.f / coordToPixel, (-55.f / coordToPixel) + float(CAMERA_HEIGHT)));
 }
 
 void GUI::update(int deltaTime) {
@@ -280,6 +358,25 @@ void GUI::update(int deltaTime) {
 	}
 }
 
+void GUI::setTime(float currentTime) {
+	int minutes = glm::floor(currentTime / 60000.f);
+	int seconds = glm::floor(currentTime / 1000.f) - (float(minutes)*60.f);
+	cout << "Real minutes: " << minutes << " Real seconds: " << seconds << endl; 
+	
+	int unim = minutes % 10;
+	int decm = glm::floor(minutes/10); 
+	cout << "Minutes" << decm << " unim:" <<  unim << endl; 
+	time3.changeDigit(decm); 
+	time2.changeDigit(unim); 
+	
+	int unis = seconds % 10;
+	int decs = glm::floor(seconds/10);
+	cout << "Seconds: " << decs << " unis: "<< unis << endl; 
+	time1.changeDigit(decs);
+	time0.changeDigit(unis); 
+}
+
+
 int GUI::getSpeedState() {
 	if (paused) {
 		if (fastForward) {
@@ -306,19 +403,19 @@ void GUI::render()
 	simpleTexProgram.setUniform2f("texCoordDispl", 0, 0);
 	barQuad->render(interfaceBar);
 
-	if (!notext) helpSprite->render(); 
+	if (!notext) helpSprite->render();
 
-	playPauseButton->render();	
-	playPauseSprite->render(); 
+	playPauseButton->render();
+	playPauseSprite->render();
 
 	stopperButton->render();
-	stopperSprite->render();  
+	stopperSprite->render();
 
-	diggerButton->render(); 
-	diggerSprite->render(); 
+	diggerButton->render();
+	diggerSprite->render();
 
 	basherButton->render();
-	basherSprite->render(); 
+	basherSprite->render();
 
 	climberButton->render();
 	climberSprite->render();
@@ -326,11 +423,40 @@ void GUI::render()
 	builderButton->render();
 	builderSprite->render();
 
-	surrenderButton->render(); 
-	explosionSprite->render(); 
+	surrenderButton->render();
+	explosionSprite->render();
 
 	fastButton->render();
-	fastSprite->render(); 
+	fastSprite->render();
+
+	stopperNumber.render(); 
+	diggerNumber.render(); 
+	basherNumber.render();
+	climberNumber.render();
+	builderNumber.render();
+
+	time3.render(); 
+	time2.render(); 
+	time1.render(); 
+	time0.render(); 
+
+	lemmingsleft1.render(); 
+	lemmingsleft0.render();
+
+	score3.render(); 
+	score2.render(); 
+	score1.render(); 
+	score0.render(); 
+
+	scoreSprite->render(); 
+
+	levelSprite->render(); 
+
+	timeSprite->render(); 
+	inSprite->render(); 
+
+	level.render(); 
+
 }
 
 void GUI::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton)
