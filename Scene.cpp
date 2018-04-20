@@ -117,6 +117,7 @@ void Scene::update(int deltaTime)
 		}
 		exitSprite->update(deltaTime);
 	}
+	interface1.setTime(currentTime);
 }
 
 void Scene::removeElement(vector<Lemming*> &v, int index) {
