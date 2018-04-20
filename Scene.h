@@ -28,6 +28,7 @@ public:
 	void mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton);
 
 	int getStatus();
+	int getSpeedState();
 
 private:
 	void initShaders();

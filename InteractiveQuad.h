@@ -31,6 +31,7 @@ public:
 	void setOffsetClick(const glm::vec2 &frame);
 
 	bool isClicked();
+	bool isHovering();
 
 	void mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse);
 
@@ -52,6 +53,7 @@ private:
 	glm::vec2 texCoordDispl;
 	bool clicked = false;
 	bool pressed = false;
+	bool hover; 
 
 	bool isInsideQuad(int x, int y);
 
