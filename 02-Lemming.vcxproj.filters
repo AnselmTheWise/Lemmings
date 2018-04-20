@@ -58,10 +58,15 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="TextScreen.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
     <ClInclude Include="GUI.h">
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="InteractiveQuad.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="WinLoseScreen.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
@@ -106,10 +111,15 @@
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="TestScreen.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
     <ClCompile Include="GUI.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
     <ClCompile Include="InteractiveQuad.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="WinLoseScreen.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
   </ItemGroup>

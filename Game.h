@@ -1,7 +1,7 @@
 #ifndef _GAME_INCLUDE
 #define _GAME_INCLUDE
 
-
+#include <iostream>
 #include "Scene.h"
 #include "MainMenu.h"
 
@@ -46,6 +46,8 @@ private:
 	                                  // we can have access at any time
 	int mouseX, mouseY;               // Mouse position
 	bool bLeftMouse, bRightMouse;     // Mouse button states
+
+	bool fast, paused;
 
 	MainMenu mainMenu;
 

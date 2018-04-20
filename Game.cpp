@@ -15,6 +15,8 @@ void Game::init()
 
 bool Game::update(int deltaTime)
 {
+	if (fast) deltaTime = 5 * deltaTime;
+	if (paused) deltaTime = 0;
 	if (renderingElement == MAIN_MENU) {
 		int status = mainMenu.getStatus(); //0 -> Executing //1 -> Level1 //2 -> Level2 //3 -> Level3 //4 -> Exit
 		if (status == 1) {
@@ -70,6 +72,12 @@ void Game::keyPressed(int key)
 void Game::keyReleased(int key)
 {
 	keys[key] = false;
+	if (key == 'f') {
+		fast = !fast;
+	}
+	if (key == 'p') {
+		paused = !paused;
+	}
 }
 
 void Game::specialKeyPressed(int key)
