@@ -67,6 +67,12 @@ void Scene::init()
 	renderingElement = SCENE;
 	selectedLemming = -1;
 	buttonClicked = -1;
+	powersLeft = { 0, 1, 1, 0, 0, 0 };
+	interface1.lemmingsLeft(lemmingsToArrive);
+	interface1.maxTime(2 * 60 * 1000);
+	interface1.setLevel(1);
+	score = 0;
+	clearLemmings();
 }
 
 unsigned int x = 0;
@@ -98,6 +104,9 @@ void Scene::update(int deltaTime)
 				--nLemmings;
 				if (st == 1) {
 					++lemmingsArrived;
+					score += 100;
+					interface1.setScore(score);
+					interface1.lemmingsLeft(lemmingsToArrive - lemmingsArrived);
 					if (lemmingsArrived == lemmingsToArrive) {
 						won = true;
 					}
@@ -117,8 +126,15 @@ void Scene::update(int deltaTime)
 			entranceSprite->update(deltaTime);
 		}
 		exitSprite->update(deltaTime);
+		if (2 * 60 * 1000 - currentTime < 0) {
+			lost = true;
+			renderingElement = LOSE;
+			endScreen.init("Lose");
+		}
+		else {
+			interface1.setTime(2 * 60 * 1000 - currentTime);
+		}
 	}
-	interface1.setTime(currentTime);
 }
 
 void Scene::removeElement(vector<Lemming*> &v, int index) {
@@ -179,9 +195,12 @@ void Scene::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButt
 		if (bt != -1) {
 			buttonClicked = bt;
 		}
-		if (buttonClicked > -1 && buttonClicked < 5 && selectedLemming >= 0 && selectedLemming < lemmings.size()) {
-			cout << "Changing Lemming " << selectedLemming << endl;
-			lemmings[selectedLemming]->setPower(buttonClicked);
+		if (buttonClicked > -1 && buttonClicked < 5 && selectedLemming >= 0 && selectedLemming < lemmings.size() && powersLeft[buttonClicked] > 0) {
+			bool success = lemmings[selectedLemming]->setPower(buttonClicked);
+			if (success) {
+				--powersLeft[buttonClicked];
+				interface1.updatePowers(powersLeft);
+			}
 		}
 		selectedLemming = -1;
 		if (bLeftButton)
@@ -201,6 +220,13 @@ int Scene::getStatus() {
 		return st;
 	}
 	return 0;
+}
+
+void Scene::clearLemmings() {
+	for (int i = 0; i < lemmings.size(); ++i) {
+		delete lemmings[i];
+	}
+	lemmings.clear();
 }
 
 void Scene::eraseMask(int mouseX, int mouseY)

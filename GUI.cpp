@@ -527,6 +527,26 @@ int GUI::getButtonClicked() {
 	return -1;
 }
 
+void GUI::maxTime(int time) {
+
+}
+
+void GUI::lemmingsLeft(int lemmingsL) {
+
+}
+
+void GUI::updatePowers(vector<int> powersLeft) {
+
+}
+
+void GUI::setScore(int score) {
+
+}
+
+void GUI::setLevel(int level) {
+
+}
+
 void GUI::initShaders()
 {
 	Shader vShader, fShader;

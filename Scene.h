@@ -36,6 +36,7 @@ private:
 	void applyMask(int mouseX, int mouseY);
 	void removeElement(vector<Lemming*> &v, int index);
 	void selfRender();
+	void clearLemmings();
 
 private:
 	TexturedQuad* barQuad;
@@ -57,6 +58,9 @@ private:
 	WinLoseScreen endScreen;
 	int selectedLemming;
 	int buttonClicked;
+	int score;
+
+	vector<int> powersLeft;
 
 	enum ANIMATION_ID { ENTRANCE_OPENING, EXIT_FIRE};
 	enum RENDERING_ELEMENT { SCENE, WIN, LOSE};

@@ -31,6 +31,16 @@ public:
 
 	int getButtonClicked();
 
+	void maxTime(int time);
+
+	void lemmingsLeft(int lemmingsL);
+
+	void updatePowers(vector<int> powersLeft);
+
+	void setScore(int score);
+
+	void setLevel(int level);
+
 private:
 	void initShaders();
 
