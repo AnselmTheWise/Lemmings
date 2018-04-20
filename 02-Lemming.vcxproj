@@ -34,7 +34,7 @@
   <ItemGroup>
     <ClCompile Include="Game.cpp" />
     <ClCompile Include="Digit.cpp" />
-    <ClCompile Include="TestScreen.cpp" />
+    <ClCompile Include="TextScreen.cpp" />
     <ClCompile Include="InteractiveQuad.cpp" />
     <ClCompile Include="Lemming.cpp" />
     <ClCompile Include="main.cpp" />

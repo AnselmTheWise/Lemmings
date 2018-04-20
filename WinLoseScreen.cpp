@@ -37,15 +37,18 @@ void WinLoseScreen::init(string kind)
 
 	projection = glm::ortho(0.f, float(CAMERA_WIDTH - 1), float(CAMERA_HEIGHT - 1), 0.f);
 
-	mainMenuButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
-	nextReplayButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
+	mainMenuButtonTexture.loadFromFile("images/backButton.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	if (kind == "Win") nextReplayButtonTexture.loadFromFile("images/nextLevelButton.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	else nextReplayButtonTexture.loadFromFile("images/retryButton.png", TEXTURE_PIXEL_FORMAT_RGBA); 
 
-	mainMenuButton = InteractiveQuad::createInteractiveQuad(glm::vec2(250.f*CAMERA_WIDTH / 960.f, 400.f*CAMERA_HEIGHT / 480.f), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &mainMenuButtonTexture, &simpleTexProgram);
+	mainMenuButton = InteractiveQuad::createInteractiveQuad(glm::vec2(400.f*CAMERA_WIDTH / 960.f, 400.f*CAMERA_HEIGHT / 480.f), glm::vec2((CAMERA_WIDTH / 3.f)-40.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &mainMenuButtonTexture, &simpleTexProgram);
 	mainMenuButton->setOffsetIdle(glm::vec2(0.f, 0.f));
-	mainMenuButton->setOffsetHover(glm::vec2(0.5f, 0.f));
-	nextReplayButton = InteractiveQuad::createInteractiveQuad(glm::vec2(600.f*CAMERA_WIDTH / 960.f, 400.f*CAMERA_HEIGHT / 480.f), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &nextReplayButtonTexture, &simpleTexProgram);
+	mainMenuButton->setOffsetHover(glm::vec2(1.f/3.f, 0.f));
+	mainMenuButton->setOffsetClick(glm::vec2(2.f/3.f, 0.f));
+	nextReplayButton = InteractiveQuad::createInteractiveQuad(glm::vec2(650.f*CAMERA_WIDTH / 960.f, 400.f*CAMERA_HEIGHT / 480.f), glm::vec2((CAMERA_WIDTH / 3.f)-40.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &nextReplayButtonTexture, &simpleTexProgram);
 	nextReplayButton->setOffsetIdle(glm::vec2(0.f, 0.f));
-	nextReplayButton->setOffsetHover(glm::vec2(0.5f, 0.f));
+	nextReplayButton->setOffsetHover(glm::vec2(1.f/3.f, 0.f));
+	nextReplayButton->setOffsetClick(glm::vec2(2.f/3.f, 0.f)); 
 
 }
 

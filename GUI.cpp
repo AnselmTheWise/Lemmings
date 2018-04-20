@@ -29,6 +29,7 @@ void GUI::init()
 	basherNumber.init(glm::vec2(122.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
 	climberNumber.init(glm::vec2(172.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
 	builderNumber.init(glm::vec2(222.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
+	portalNumber.init(glm::vec2(272.f / coordToPixel, (-62.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::ivec2(4, 4));
 
 	float offset = 8.f; 
 
@@ -56,7 +57,7 @@ void GUI::init()
 
 	barQuad = TexturedQuad::createTexturedQuad(geom, texCoords, simpleTexProgram);
 
-	interfaceBar.loadFromFile("images/barTest4.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	interfaceBar.loadFromFile("images/barTest6.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	interfaceBar.setMinFilter(GL_NEAREST);
 	interfaceBar.setMagFilter(GL_NEAREST);
 
@@ -232,29 +233,52 @@ void GUI::init()
 	fastSprite->changeAnimation(FAST);
 	fastSprite->setPosition(glm::vec2(740.f / coordToPixel, (-53.f / coordToPixel) + float(CAMERA_HEIGHT)));
 
+	portalButtonTexture.loadFromFile("images/ButtonTest.png", TEXTURE_PIXEL_FORMAT_RGBA);
+
+	portalButton = InteractiveQuad::createInteractiveQuad(glm::vec2(258.f / coordToPixel, (-50.f / coordToPixel) + float(CAMERA_HEIGHT)), glm::vec2(42.f / coordToPixel, 42.f / coordToPixel), glm::vec2(1.f / 3.f, 1.f), &portalButtonTexture, &simpleTexProgram);
+	portalButton->setOffsetIdle(glm::vec2(0.f, 0.f));
+	portalButton->setOffsetHover(glm::vec2(1.f / 3.f, 0.f));
+	portalButton->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
+
+	portalSheet.loadFromFile("images/bluePortal.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	portalSheet.setMinFilter(GL_NEAREST);
+	portalSheet.setMagFilter(GL_NEAREST);
+
+	portalSprite = Sprite::createSprite(glm::ivec2(8, 13), glm::vec2(0.25, 1.0), &portalSheet, &simpleTexProgram);
+	portalSprite->setNumberAnimations(16);
+
+	portalSprite->setAnimationSpeed(PORTAL, 4);
+	for (int i = 0; i<4; i++)
+		portalSprite->addKeyframe(PORTAL, glm::vec2(float(i) / 4, 0.0f));
+
+	portalSprite->changeAnimation(PORTAL);
+	portalSprite->setPosition(glm::vec2(267.f / coordToPixel, (-48.f / coordToPixel) + float(CAMERA_HEIGHT)));
+
 	helpSheet.loadFromFile("images/helptext.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	helpSheet.setMinFilter(GL_NEAREST);
 	helpSheet.setMagFilter(GL_NEAREST);
 
-	helpSprite = Sprite::createSprite(glm::ivec2(40, 4), glm::vec2(1.0, 0.125), &helpSheet, &simpleTexProgram);
+	helpSprite = Sprite::createSprite(glm::ivec2(40, 4), glm::vec2(1.0, 0.1), &helpSheet, &simpleTexProgram);
 	helpSprite->setNumberAnimations(16); 
 
 	helpSprite->setAnimationSpeed(STOPPERT, 1);
 	helpSprite->addKeyframe(STOPPERT, glm::vec2(0.0f, 0.0f));
 	helpSprite->setAnimationSpeed(DIGGERT, 1);
-	helpSprite->addKeyframe(DIGGERT, glm::vec2(0.0f ,0.125f));
+	helpSprite->addKeyframe(DIGGERT, glm::vec2(0.0f ,0.1f));
 	helpSprite->setAnimationSpeed(BASHERT, 1);
-	helpSprite->addKeyframe(BASHERT, glm::vec2(0.0f, 0.250f));
+	helpSprite->addKeyframe(BASHERT, glm::vec2(0.0f, 0.2f));
 	helpSprite->setAnimationSpeed(CLIMBERT, 1);
-	helpSprite->addKeyframe(CLIMBERT, glm::vec2(0.0f, 0.375f));
+	helpSprite->addKeyframe(CLIMBERT, glm::vec2(0.0f, 0.3f));
 	helpSprite->setAnimationSpeed(BUILDERT, 1);
-	helpSprite->addKeyframe(BUILDERT, glm::vec2(0.0f, 0.500f));
+	helpSprite->addKeyframe(BUILDERT, glm::vec2(0.0f, 0.4f));
 	helpSprite->setAnimationSpeed(SURRENDERT, 1);
-	helpSprite->addKeyframe(SURRENDERT, glm::vec2(0.0f, 0.625f));
+	helpSprite->addKeyframe(SURRENDERT, glm::vec2(0.0f, 0.5f));
 	helpSprite->setAnimationSpeed(PLAYPAUSET, 1);
-	helpSprite->addKeyframe(PLAYPAUSET, glm::vec2(0.0f, 0.750f));
+	helpSprite->addKeyframe(PLAYPAUSET, glm::vec2(0.0f, 0.6f));
 	helpSprite->setAnimationSpeed(FASTT, 1);
-	helpSprite->addKeyframe(FASTT, glm::vec2(0.0f, 0.875f));
+	helpSprite->addKeyframe(FASTT, glm::vec2(0.0f, 0.7f));
+	helpSprite->setAnimationSpeed(PORTALT, 1);
+	helpSprite->addKeyframe(PORTALT, glm::vec2(0.0f, 0.8f));
 	
 	helpSprite->changeAnimation(STOPPERT);
 	helpSprite->setPosition(glm::vec2(8.f / coordToPixel, (-82.f / coordToPixel) + float(CAMERA_HEIGHT)));
@@ -351,6 +375,11 @@ void GUI::update(int deltaTime) {
 		notext = false;
 		helpSprite->changeAnimation(FASTT);
 	}
+	else if (portalButton->isHovering()) {
+		portalSprite->update(deltaTime);
+		notext = false; 
+		helpSprite->changeAnimation(PORTALT); 
+	}
 	else notext = true; 
 
 	if (fastForward) {
@@ -361,17 +390,14 @@ void GUI::update(int deltaTime) {
 void GUI::setTime(float currentTime) {
 	int minutes = glm::floor(currentTime / 60000.f);
 	int seconds = glm::floor(currentTime / 1000.f) - (float(minutes)*60.f);
-	cout << "Real minutes: " << minutes << " Real seconds: " << seconds << endl; 
 	
 	int unim = minutes % 10;
 	int decm = glm::floor(minutes/10); 
-	cout << "Minutes" << decm << " unim:" <<  unim << endl; 
 	time3.changeDigit(decm); 
 	time2.changeDigit(unim); 
 	
 	int unis = seconds % 10;
-	int decs = glm::floor(seconds/10);
-	cout << "Seconds: " << decs << " unis: "<< unis << endl; 
+	int decs = glm::floor(seconds/10); 
 	time1.changeDigit(decs);
 	time0.changeDigit(unis); 
 }
@@ -423,6 +449,9 @@ void GUI::render()
 	builderButton->render();
 	builderSprite->render();
 
+	portalButton->render(); 
+	portalSprite->render(); 
+
 	surrenderButton->render();
 	explosionSprite->render();
 
@@ -434,6 +463,7 @@ void GUI::render()
 	basherNumber.render();
 	climberNumber.render();
 	builderNumber.render();
+	portalNumber.render(); 
 
 	time3.render(); 
 	time2.render(); 
@@ -467,6 +497,7 @@ void GUI::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton
 	basherButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 	climberButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 	builderButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
+	portalButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 	surrenderButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 	fastButton->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
 
@@ -524,27 +555,56 @@ int GUI::getButtonClicked() {
 	else if (fastButton->isClicked()) {
 		return 7;
 	}
+	else if (portalButton->isClicked()) {
+		return 8; 
+	}
 	return -1;
 }
 
 void GUI::maxTime(int time) {
-
+	setTime(float(time)); 
 }
 
 void GUI::lemmingsLeft(int lemmingsL) {
-
+	if (lemmingsL >= 0) {
+		int unil = lemmingsL % 10;
+		int decl = glm::floor(lemmingsL / 10);
+		lemmingsleft0.changeDigit(unil);
+		lemmingsleft1.changeDigit(decl);
+	}
 }
 
 void GUI::updatePowers(vector<int> powersLeft) {
-
+	stopperNumber.changeDigit(powersLeft[0]);
+	diggerNumber.changeDigit(powersLeft[1]);
+	basherNumber.changeDigit(powersLeft[2]);
+	climberNumber.changeDigit(powersLeft[3]);
+	builderNumber.changeDigit(powersLeft[4]);
+	portalNumber.changeDigit(powersLeft[5]); 
 }
 
 void GUI::setScore(int score) {
+	cout << score << endl;
+	int unis = score % 10; 
+	int decs = int(glm::floor(score/10)) %10; 
+	int cens = int(glm::floor(score/100)) %10; 
+	int mils = int(glm::floor(score/1000)) %10; 
 
+	cout << "Unis: " << unis << endl; 
+	cout << "Decs: " << decs << endl;
+	cout << "Cens: " << cens << endl;
+	cout << "Mils: " << mils << endl;
+
+	score0.changeDigit(unis);
+	score1.changeDigit(decs); 
+	score2.changeDigit(cens);
+	cout << "antea" << endl; 
+	score3.changeDigit(mils); 
+	cout << "despues" << endl; 
 }
 
 void GUI::setLevel(int level) {
-
+	this->level.changeDigit(level); 
 }
 
 void GUI::initShaders()

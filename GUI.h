@@ -46,14 +46,14 @@ private:
 
 private:
 	enum ANIM_ID {
-		STOPPER, DIGGER, BASHER, CLIMBER, BUILDER, EXPLOSION, PLAY, PAUSE, FAST
+		STOPPER, DIGGER, BASHER, CLIMBER, BUILDER, EXPLOSION, PLAY, PAUSE, FAST, PORTAL
 	};
 
 	enum TEXT {
-		NONE, STOPPERT, DIGGERT, BASHERT, CLIMBERT, BUILDERT, SURRENDERT, PLAYPAUSET, FASTT, SCORE, TIME, LEVEL, IN
+		NONE, STOPPERT, DIGGERT, BASHERT, CLIMBERT, BUILDERT, SURRENDERT, PLAYPAUSET, FASTT, SCORE, TIME, LEVEL, PORTALT, IN
 	};
 
-	Digit stopperNumber, diggerNumber, basherNumber, climberNumber, builderNumber; 
+	Digit stopperNumber, diggerNumber, basherNumber, climberNumber, builderNumber, portalNumber; 
 	Digit time3, time2, time1, time0; 
 	Digit lemmingsleft1, lemmingsleft0; 
 	Digit score3, score2, score1, score0; 
@@ -62,13 +62,13 @@ private:
 	Texture helpSheet, scoreSheet, timeSheet, levelSheet, inSheet; 
 	Sprite *helpSprite, *scoreSprite, *timeSprite, *levelSprite, *inSprite; 
 
-	Texture stopperSheet, diggerSheet, basherSheet, climberSheet, builderSheet, explosionSheet, playPauseSheet, fastSheet;
-	Sprite *stopperSprite, *diggerSprite, *basherSprite, *climberSprite, *builderSprite, *explosionSprite, *playPauseSprite, *fastSprite;
+	Texture stopperSheet, diggerSheet, basherSheet, climberSheet, builderSheet, explosionSheet, playPauseSheet, fastSheet, portalSheet;
+	Sprite *stopperSprite, *diggerSprite, *basherSprite, *climberSprite, *builderSprite, *explosionSprite, *playPauseSprite, *fastSprite, *portalSprite;
 
 	TexturedQuad* barQuad;
 	Texture interfaceBar;
-	Texture stopperButtonTexture, diggerButtonTexture, basherButtonTexture, climberButtonTexture, builderButtonTexture, surrenderButtonTexture, playPauseButtonTexture, fastButtonTexture;
-	InteractiveQuad *stopperButton, *diggerButton, *basherButton, *climberButton, *builderButton, *surrenderButton, *playPauseButton, *fastButton; 
+	Texture stopperButtonTexture, diggerButtonTexture, basherButtonTexture, climberButtonTexture, builderButtonTexture, surrenderButtonTexture, playPauseButtonTexture, fastButtonTexture, portalButtonTexture;
+	InteractiveQuad *stopperButton, *diggerButton, *basherButton, *climberButton, *builderButton, *surrenderButton, *playPauseButton, *fastButton, *portalButton; 
 	ShaderProgram simpleTexProgram;
 	glm::mat4 projection;
 

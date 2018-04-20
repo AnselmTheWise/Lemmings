@@ -34,12 +34,12 @@ void TextScreen::init(string kind)
 
 	projection = glm::ortho(0.f, float(CAMERA_WIDTH - 1), float(CAMERA_HEIGHT - 1), 0.f);
 
-	backButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
+	backButtonTexture.loadFromFile("images/backButton.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	backButton = InteractiveQuad::createInteractiveQuad(glm::vec2(600.f*CAMERA_WIDTH / 960.f, 400.f*CAMERA_HEIGHT / 480.f), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &backButtonTexture, &simpleTexProgram);
+	backButton = InteractiveQuad::createInteractiveQuad(glm::vec2(650.f*CAMERA_WIDTH / 960.f, 400.f*CAMERA_HEIGHT / 480.f), glm::vec2((CAMERA_WIDTH / 3.f) -40.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &backButtonTexture, &simpleTexProgram);
 	backButton->setOffsetIdle(glm::vec2(0.f, 0.f));
-	backButton->setOffsetHover(glm::vec2(0.5f, 0.f));
-
+	backButton->setOffsetHover(glm::vec2(1.f/3.f, 0.f));
+	backButton->setOffsetClick(glm::vec2(2.f/3.f, 0.f));
 }
 
 void TextScreen::render()

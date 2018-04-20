@@ -31,7 +31,7 @@ private:
 private:
 	TexturedQuad* backgroundQuad;
 	Texture backgroundTexture;
-	Texture playButtonTexture;
+	Texture playButtonTexture, instructionsButtonTexture1, creditButtonTexture, exitButtonTexture;
 	Texture instructionsButtonTexture;
 	ShaderProgram simpleTexProgram;
 	glm::mat4 projection;

@@ -29,23 +29,27 @@ void PlayMenu::init()
 
 	projection = glm::ortho(0.f, float(CAMERA_WIDTH - 1), float(CAMERA_HEIGHT - 1), 0.f);
 
-	level1ButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
-	level2ButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
-	level3ButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
-	backButtonTexture.loadFromFile("images/TestPlayTexture.jpg", TEXTURE_PIXEL_FORMAT_RGB);
+	level1ButtonTexture.loadFromFile("images/level1Button.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	level2ButtonTexture.loadFromFile("images/level2Button.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	level3ButtonTexture.loadFromFile("images/level3Button.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	backButtonTexture.loadFromFile("images/backButton.png", TEXTURE_PIXEL_FORMAT_RGBA);
 
-	level1Button = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &level1ButtonTexture, &simpleTexProgram);
+	level1Button = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10), glm::vec2(CAMERA_WIDTH / 5.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &level1ButtonTexture, &simpleTexProgram);
 	level1Button->setOffsetIdle(glm::vec2(0.f, 0.f));
-	level1Button->setOffsetHover(glm::vec2(0.5f, 0.f));
-	level2Button = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 20), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &level2ButtonTexture, &simpleTexProgram);
+	level1Button->setOffsetHover(glm::vec2(1.f/3.f, 0.f));
+	level1Button->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
+	level2Button = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 20), glm::vec2(CAMERA_WIDTH / 5.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &level2ButtonTexture, &simpleTexProgram);
 	level2Button->setOffsetIdle(glm::vec2(0.f, 0.f));
-	level2Button->setOffsetHover(glm::vec2(0.5f, 0.f));
-	level3Button = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 40), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &level3ButtonTexture, &simpleTexProgram);
+	level2Button->setOffsetHover(glm::vec2(1.f / 3.f, 0.f));
+	level2Button->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
+	level3Button = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 40), glm::vec2(CAMERA_WIDTH / 5.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &level3ButtonTexture, &simpleTexProgram);
 	level3Button->setOffsetIdle(glm::vec2(0.f, 0.f));
-	level3Button->setOffsetHover(glm::vec2(0.5f, 0.f));
-	backButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 60), glm::vec2(CAMERA_WIDTH / 3.f, CAMERA_HEIGHT / 10.f), glm::vec2(0.5f, 1.f), &backButtonTexture, &simpleTexProgram);
+	level3Button->setOffsetHover(glm::vec2(1.f / 3.f, 0.f));
+	level3Button->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
+	backButton = InteractiveQuad::createInteractiveQuad(glm::vec2(CAMERA_HEIGHT / 3.f, 5.f * CAMERA_HEIGHT / 10 + 60), glm::vec2(CAMERA_WIDTH / 5.f, CAMERA_HEIGHT / 10.f), glm::vec2(1.f/3.f, 1.f), &backButtonTexture, &simpleTexProgram);
 	backButton->setOffsetIdle(glm::vec2(0.f, 0.f));
-	backButton->setOffsetHover(glm::vec2(0.5f, 0.f));
+	backButton->setOffsetHover(glm::vec2(1.f/3.f, 0.f));
+	backButton->setOffsetClick(glm::vec2(2.f/3.f, 0.f)); 
 
 }
 
