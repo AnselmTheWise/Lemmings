@@ -45,8 +45,20 @@ unsigned int x = 0;
 
 void Scene::update(int deltaTime)
 {
-	currentTime += deltaTime;
-	lemming.update(deltaTime);
+	if (interface1.getSpeedState() == 0) {
+		currentTime += deltaTime;
+		lemming.update(deltaTime);
+		interface1.update(deltaTime);
+	}
+	else if (interface1.getSpeedState() == 1) { 
+		lemming.update(0); 
+		interface1.update(deltaTime); 
+	}
+	else {
+		currentTime += deltaTime * 5;
+		lemming.update(5 * deltaTime); 
+		interface1.update(deltaTime); 
+	}
 }
 
 void Scene::render()
@@ -82,7 +94,11 @@ void Scene::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButt
 }
 
 int Scene::getStatus() {
-	return 0;
+	return 0; 
+}
+
+int Scene::getSpeedState() {
+	return interface1.getSpeedState();
 }
 
 void Scene::eraseMask(int mouseX, int mouseY)
