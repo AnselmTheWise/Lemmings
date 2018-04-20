@@ -40,6 +40,7 @@ InteractiveQuad::InteractiveQuad(glm::vec2 &initialPosition, glm::vec2 &quadSize
 	size = quadSize;
 	frame = 0;
 	clicked = false;
+	hover = false; 
 	frameOrigins.resize(3);
 	validFrames.resize(3, false);
 }
@@ -83,6 +84,7 @@ void InteractiveQuad::setOffsetClick(const glm::vec2 &frame) {
 
 void InteractiveQuad::mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse) {
 	if (isInsideQuad(x, y)) {
+		hover = true;
 		//cout << "Inside the quad" << endl;
 		if (bLeftMouse == true) {
 			//cout << "The button is clicked" << endl;
@@ -108,6 +110,7 @@ void InteractiveQuad::mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse
 		}
 	}
 	else {
+		hover = false;
 		//Mouse outside
 		//cout << "Outside the quad" << endl;
 		if (bLeftMouse == false) {
@@ -121,6 +124,10 @@ void InteractiveQuad::mouseEvent(int x, int y, bool bLeftMouse, bool bRightMouse
 		
 
 	}
+}
+
+bool InteractiveQuad::isHovering() {
+	return hover;
 }
 
 bool InteractiveQuad::isClicked() {
