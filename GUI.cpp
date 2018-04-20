@@ -107,7 +107,7 @@ void GUI::init()
 	basherButton->setOffsetHover(glm::vec2(1.f / 3.f, 0.f));
 	basherButton->setOffsetClick(glm::vec2(2.f / 3.f, 0.f));
 
-	basherSheet.loadFromFile("images/basher.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	basherSheet.loadFromFile("images/basher2.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	basherSheet.setMinFilter(GL_NEAREST);
 	basherSheet.setMagFilter(GL_NEAREST);
 
@@ -371,6 +371,34 @@ void GUI::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton
 		}
 
 	}
+}
+
+int GUI::getButtonClicked() {
+	if (stopperButton->isClicked()) {
+		return 0;
+	}
+	else if (diggerButton->isClicked()) {
+		return 1;
+	}
+	else if (basherButton->isClicked()) {
+		return 2;
+	}
+	else if (climberButton->isClicked()) {
+		return 3;
+	}
+	else if (builderButton->isClicked()) {
+		return 4;
+	}
+	else if (surrenderButton->isClicked()) {
+		return 5;
+	}
+	else if (playPauseButton->isClicked()) {
+		return 6;
+	}
+	else if (fastButton->isClicked()) {
+		return 7;
+	}
+	return -1;
 }
 
 void GUI::initShaders()

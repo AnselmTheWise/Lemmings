@@ -13,7 +13,7 @@
 
 enum LemmingAnims
 {
-	WALKING_LEFT, WALKING_RIGHT, FALLING_LEFT, FALLING_RIGHT, EXITING
+	WALKING_LEFT, WALKING_RIGHT, FALLING_LEFT, FALLING_RIGHT, STOPPING, DIGGING, EXITING
 };
 
 
@@ -53,6 +53,32 @@ void Lemming::init(const glm::vec2 &initialPosition, ShaderProgram &shaderProgra
 
 	fallingSprite->changeAnimation(FALLING_RIGHT);
 	fallingSprite->setPosition(initialPosition);
+
+	stoppingSpritesheet.loadFromFile("images/stopper.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	stoppingSpritesheet.setMinFilter(GL_NEAREST);
+	stoppingSpritesheet.setMagFilter(GL_NEAREST);
+	stoppingSprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.0625f, 1.f), &stoppingSpritesheet, &shaderProgram);
+	stoppingSprite->setNumberAnimations(16);
+
+	stoppingSprite->setAnimationSpeed(STOPPING, 12);
+	for (int i = 0; i<16; i++)
+		stoppingSprite->addKeyframe(STOPPING, glm::vec2(float(i) / 16, 0.0f));
+
+	stoppingSprite->changeAnimation(STOPPING);
+	stoppingSprite->setPosition(initialPosition);
+
+	diggingSpritesheet.loadFromFile("images/digger.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	diggingSpritesheet.setMinFilter(GL_NEAREST);
+	diggingSpritesheet.setMagFilter(GL_NEAREST);
+	diggingSprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.125f, 1.f), &diggingSpritesheet, &shaderProgram);
+	diggingSprite->setNumberAnimations(16);
+
+	diggingSprite->setAnimationSpeed(DIGGING, 24);
+	for (int i = 0; i<8; i++)
+		diggingSprite->addKeyframe(DIGGING, glm::vec2(float(i) / 8, 0.0f));
+
+	diggingSprite->changeAnimation(DIGGING);
+	diggingSprite->setPosition(initialPosition);
 
 	exitSpritesheet.loadFromFile("images/exitLemming.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	exitSpritesheet.setMinFilter(GL_NEAREST);
@@ -185,16 +211,49 @@ void Lemming::update(int deltaTime)
 		}
 		break;
 	case EXITING_STATE:
-		cout << "EXIT" << endl;
 		timeExiting += deltaTime;
 		exitSprite->update(deltaTime);
 		if (timeExiting > 800*(12.f/30.f)) {
 			status = 1;
 		}
 		break;
+	case STOPPING_STATE:
+		stoppingSprite->update(deltaTime);
+		break;
+	case DIGGING_STATE:
+		fall = collisionFloor(3);
+		if (fall > 1) {
+			state = FALLING_RIGHT_STATE;
+			fallingSprite->changeAnimation(FALLING_RIGHT);
+		}
+		else {
+			diggingSprite->update(deltaTime);
+			digMask();
+			sprite->position().y += 0.5;
+		}
 	}
 	exitSprite->position() = sprite->position();
 	fallingSprite->position() = sprite->position();
+	stoppingSprite->position() = glm::vec2(sprite->position().x, sprite->position().y+1);
+	diggingSprite->position() = sprite->position();
+	interactiveQuad->position() = sprite->position();
+}
+
+bool Lemming::setPower(int power) {
+	if (power == 0) {
+		if (state != FALLING_LEFT_STATE && state != FALLING_RIGHT_STATE) {
+			state = STOPPING_STATE;
+			addBlocking();
+			return true;
+		}
+	}
+	else if (power == 1) {
+		if (state != FALLING_LEFT_STATE && state != FALLING_RIGHT_STATE) {
+			state = DIGGING_STATE;
+			return true;
+		}
+	}
+	return false;
 }
 
 int Lemming::getStatus() {
@@ -209,6 +268,12 @@ void Lemming::render()
 	else if (state == FALLING_RIGHT_STATE || state == FALLING_LEFT_STATE) {
 		fallingSprite->render();
 	}
+	else if (state == STOPPING_STATE) {
+		stoppingSprite->render();
+	}
+	else if (state == DIGGING_STATE) {
+		diggingSprite->render();
+	}
 	else {
 		sprite->render();
 	}
@@ -220,8 +285,29 @@ void Lemming::setMapMask(VariableTexture *mapMask)
 	mask = mapMask;
 }
 
+bool Lemming::isClicked() {
+	return interactiveQuad->isClicked();
+}
+
 void Lemming::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton) {
 	interactiveQuad->mouseEvent(mouseX, mouseY, bLeftButton, bRightButton);
+}
+
+void Lemming::addBlocking() {
+	for (int i = sprite->position().x + 4; i < sprite->position().x + 12; ++i) {
+		for (int j = sprite->position().y + 6; j < sprite->position().y + 16; ++j) {
+			cout << i << " " << j << endl;
+			mask->setPixel((i*960/CAMERA_WIDTH) / 3 + 120, (j*960 / CAMERA_WIDTH) / 3, 255);
+		}
+	}
+}
+
+void Lemming::digMask() {
+	int x = sprite->position().x;
+	int y = sprite->position().y + 16;
+	for (int i = x + 2; i < x + 12; ++i) {
+		mask->setPixel((i * 960 / CAMERA_WIDTH) / 3 + 120, (y * 960 / CAMERA_WIDTH) / 3, 0);
+	}
 }
 
 int Lemming::collisionFloor(int maxFall)

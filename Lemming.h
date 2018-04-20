@@ -24,22 +24,30 @@ public:
 	void mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton);
 
 	int getStatus();
+
+	bool setPower(int power); //0 -> Stopper //1 -> Digger
+
+	bool isClicked();
 	
 private:
 	int collisionFloor(int maxFall);
 	bool collision();
+	void addBlocking();
+	void digMask();
 	
 private:
 	enum LemmingState
 	{
-		WALKING_LEFT_STATE, WALKING_RIGHT_STATE, FALLING_LEFT_STATE, FALLING_RIGHT_STATE, STOPPING, EXITING_STATE
+		WALKING_LEFT_STATE, WALKING_RIGHT_STATE, FALLING_LEFT_STATE, FALLING_RIGHT_STATE, STOPPING_STATE, DIGGING_STATE, EXITING_STATE
 	};
 
 	LemmingState state;
-	Texture spritesheet, spritesheetIQ, exitSpritesheet, fallingSpritesheet;
+	Texture spritesheet, spritesheetIQ, exitSpritesheet, fallingSpritesheet, stoppingSpritesheet, diggingSpritesheet;
 	Sprite *sprite;
 	Sprite *exitSprite;
 	Sprite *fallingSprite;
+	Sprite *stoppingSprite;
+	Sprite *diggingSprite;
 	InteractiveQuad *interactiveQuad;
 	VariableTexture *mask;
 

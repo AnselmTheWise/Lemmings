@@ -26,6 +26,8 @@ public:
 
 	int getSpeedState();
 
+	int getButtonClicked();
+
 private:
 	void initShaders();
 
