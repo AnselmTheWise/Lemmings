@@ -65,7 +65,8 @@ void Scene::init()
 	exitSprite->position() = glm::vec2(220, 105);
 	lastTimeLemmingSpawned = 0;
 	renderingElement = SCENE;
-
+	selectedLemming = -1;
+	buttonClicked = -1;
 }
 
 unsigned int x = 0;
@@ -169,9 +170,20 @@ void Scene::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButt
 	if (renderingElement == SCENE) {
 		for (int i = 0; i < lemmings.size(); ++i) {
 			lemmings[i]->mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
+			if (lemmings[i]->isClicked()) {
+				selectedLemming = i;
+			}
 		}
 		interface1.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
-
+		int bt = interface1.getButtonClicked();
+		if (bt != -1) {
+			buttonClicked = bt;
+		}
+		if (buttonClicked > -1 && buttonClicked < 5 && selectedLemming >= 0 && selectedLemming < lemmings.size()) {
+			cout << "Changing Lemming " << selectedLemming << endl;
+			lemmings[selectedLemming]->setPower(buttonClicked);
+		}
+		selectedLemming = -1;
 		if (bLeftButton)
 			eraseMask(mouseX, mouseY);
 		else if (bRightButton)

@@ -499,6 +499,34 @@ void GUI::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton
 	}
 }
 
+int GUI::getButtonClicked() {
+	if (stopperButton->isClicked()) {
+		return 0;
+	}
+	else if (diggerButton->isClicked()) {
+		return 1;
+	}
+	else if (basherButton->isClicked()) {
+		return 2;
+	}
+	else if (climberButton->isClicked()) {
+		return 3;
+	}
+	else if (builderButton->isClicked()) {
+		return 4;
+	}
+	else if (surrenderButton->isClicked()) {
+		return 5;
+	}
+	else if (playPauseButton->isClicked()) {
+		return 6;
+	}
+	else if (fastButton->isClicked()) {
+		return 7;
+	}
+	return -1;
+}
+
 void GUI::initShaders()
 {
 	Shader vShader, fShader;

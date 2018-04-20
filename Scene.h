@@ -55,6 +55,8 @@ private:
 	int lemmingsToSpawn, lemmingsToArrive, lemmingsSpawned, lemmingsArrived, nLemmings;
 	bool won, lost;
 	WinLoseScreen endScreen;
+	int selectedLemming;
+	int buttonClicked;
 
 	enum ANIMATION_ID { ENTRANCE_OPENING, EXIT_FIRE};
 	enum RENDERING_ELEMENT { SCENE, WIN, LOSE};
