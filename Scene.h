@@ -8,6 +8,7 @@
 #include "TexturedQuad.h"
 #include "Lemming.h"
 #include "GUI.h"
+#include "WinLoseScreen.h"
 
 
 // Scene contains all the entities of our game.
@@ -33,17 +34,32 @@ private:
 	void initShaders();
 	void eraseMask(int mouseX, int mouseY);
 	void applyMask(int mouseX, int mouseY);
+	void removeElement(vector<Lemming*> &v, int index);
+	void selfRender();
 
 private:
 	TexturedQuad* barQuad;
-	Texture colorTexture, interfaceBar;
+	Texture colorTexture, interfaceBar, entranceSpritesheet, exitSpritesheet;
 	VariableTexture maskTexture;
 	MaskedTexturedQuad *map;
 	ShaderProgram simpleTexProgram, maskedTexProgram;
 	float currentTime;
 	glm::mat4 projection;
-	Lemming lemming;
+	vector<Lemming*> lemmings;
 	GUI interface1;
+	int lastTimeLemmingSpawned;
+	glm::vec2 entrance;
+	glm::vec2 exit;
+	Sprite* entranceSprite;
+	Sprite* exitSprite;
+	int lemmingsToSpawn, lemmingsToArrive, lemmingsSpawned, lemmingsArrived, nLemmings;
+	bool won, lost;
+	WinLoseScreen endScreen;
+
+	enum ANIMATION_ID { ENTRANCE_OPENING, EXIT_FIRE};
+	enum RENDERING_ELEMENT { SCENE, WIN, LOSE};
+
+	RENDERING_ELEMENT renderingElement;
 
 };
 

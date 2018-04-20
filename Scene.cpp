@@ -19,6 +19,10 @@ Scene::~Scene()
 
 void Scene::init()
 {
+	lemmingsToSpawn = 10;
+	lemmingsToArrive = 5;
+	lemmingsSpawned = lemmingsArrived = nLemmings = 0;
+
 	interface1.init(); 
 
 	glm::vec2 geom[2] = {glm::vec2(0.f, 0.f), glm::vec2(float(CAMERA_WIDTH), float(CAMERA_HEIGHT))};
@@ -36,21 +40,99 @@ void Scene::init()
 
 	projection = glm::ortho(0.f, float(CAMERA_WIDTH - 1), float(CAMERA_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
-	
-	lemming.init(glm::vec2(60, 30), simpleTexProgram);
-	lemming.setMapMask(&maskTexture);
+	entrance = glm::vec2(60, 30);
+	entranceSpritesheet.loadFromFile("images/spawndoor.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	entranceSpritesheet.setMinFilter(GL_NEAREST);
+	entranceSpritesheet.setMagFilter(GL_NEAREST);
+	entranceSprite = Sprite::createSprite(glm::vec2(45.f, 27.f), glm::vec2(1.f, 1.f / 10.f), &entranceSpritesheet, &simpleTexProgram);
+	entranceSprite->setNumberAnimations(10);
+	entranceSprite->setAnimationSpeed(ENTRANCE_OPENING, 12);
+	for (int i = 0; i < 10; ++i) {
+		entranceSprite->addKeyframe(ENTRANCE_OPENING, glm::vec2(0.f, float(i) / 10));
+	}
+	entranceSprite->changeAnimation(ENTRANCE_OPENING);
+	entranceSprite->position() = glm::vec2(entrance.x - 15.f, entrance.y);
+	exitSpritesheet.loadFromFile("images/exitdoor.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	exitSpritesheet.setMinFilter(GL_NEAREST);
+	exitSpritesheet.setMagFilter(GL_NEAREST);
+	exitSprite = Sprite::createSprite(glm::vec2(37.f, 27.f), glm::vec2(1.f / 6.f, 1.f), &exitSpritesheet, &simpleTexProgram);
+	exitSprite->setNumberAnimations(6);
+	exitSprite->setAnimationSpeed(EXIT_FIRE, 12);
+	for (int i = 0; i < 6; ++i) {
+		exitSprite->addKeyframe(EXIT_FIRE, glm::vec2(float(i) / 6.f, 0.f));
+	}
+	exitSprite->changeAnimation(EXIT_FIRE);
+	exitSprite->position() = glm::vec2(220, 105);
+	lastTimeLemmingSpawned = 0;
+	renderingElement = SCENE;
+
 }
 
 unsigned int x = 0;
 
 void Scene::update(int deltaTime)
 {
-	currentTime += deltaTime;
-	lemming.update(deltaTime);
+	if (renderingElement == SCENE) {
+		currentTime += deltaTime;
+		if (lemmingsSpawned < lemmingsToSpawn && currentTime >(24.f / 30.f) * 1000 && currentTime - lastTimeLemmingSpawned > 2000) {
+			Lemming* lemming = new Lemming();
+			lemming->init(entrance, simpleTexProgram);
+			lemming->setMapMask(&maskTexture);
+			lemmings.push_back(lemming);
+			lastTimeLemmingSpawned = currentTime;
+			++lemmingsSpawned; ++nLemmings;
+		}
+		for (int i = 0; i < lemmings.size(); ++i) {
+			lemmings[i]->update(deltaTime);
+			int st = lemmings[i]->getStatus();
+			if (st == 1 || st == 2) {
+				removeElement(lemmings, i);
+				--nLemmings;
+				if (st == 1) {
+					++lemmingsArrived;
+					if (lemmingsArrived == lemmingsToArrive) {
+						won = true;
+					}
+				}
+				if (nLemmings == 0 && lemmingsArrived < lemmingsToArrive) {
+					lost = true;
+					renderingElement = LOSE;
+					endScreen.init("Lose");
+				}
+				if (nLemmings == 0 && lemmingsArrived > lemmingsToArrive) {
+					renderingElement = WIN;
+					endScreen.init("Win");
+				}
+			}
+		}
+		if (currentTime < (24.f / 30.f) * 1000) {
+			entranceSprite->update(deltaTime);
+		}
+		exitSprite->update(deltaTime);
+	}
+}
+
+void Scene::removeElement(vector<Lemming*> &v, int index) {
+	vector<Lemming*> vec;
+	for (int i = 0; i < v.size(); ++i) {
+		if (i != index) {
+			vec.push_back(v[i]);
+		}
+	}
+	v = vec;
 }
 
 void Scene::render()
 {
+	if (renderingElement == SCENE) {
+		selfRender();
+	}
+	else if (renderingElement == WIN || renderingElement == LOSE) {
+		endScreen.render();
+	}
+}
+
+void Scene::selfRender() {
 	glm::mat4 modelview;
 
 	maskedTexProgram.use();
@@ -59,29 +141,45 @@ void Scene::render()
 	modelview = glm::mat4(1.0f);
 	maskedTexProgram.setUniformMatrix4f("modelview", modelview);
 	map->render(maskedTexProgram, colorTexture, maskTexture);
-	
+
 	simpleTexProgram.use();
 	simpleTexProgram.setUniformMatrix4f("projection", projection);
 	simpleTexProgram.setUniform4f("color", 1.0f, 1.0f, 1.0f, 1.0f);
 	modelview = glm::mat4(1.0f);
 	simpleTexProgram.setUniformMatrix4f("modelview", modelview);
-	lemming.render();
+	entranceSprite->render();
+	exitSprite->render();
+	for (int i = 0; i < lemmings.size(); ++i) {
+		lemmings[i]->render();
+	}
 
-	interface1.render(); 	
+	interface1.render();
 }
 
 void Scene::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButton)
 {
-	lemming.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
-	interface1.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton); 
+	if (renderingElement == SCENE) {
+		for (int i = 0; i < lemmings.size(); ++i) {
+			lemmings[i]->mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
+		}
+		interface1.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
 
-	if(bLeftButton)
-		eraseMask(mouseX, mouseY);
-	else if(bRightButton)
-		applyMask(mouseX, mouseY);
+		if (bLeftButton)
+			eraseMask(mouseX, mouseY);
+		else if (bRightButton)
+			applyMask(mouseX, mouseY);
+	}
+	else if (renderingElement == WIN || renderingElement == LOSE) {
+		endScreen.mouseMoved(mouseX, mouseY, bLeftButton, bRightButton);
+	}
 }
 
 int Scene::getStatus() {
+	if (renderingElement == WIN || renderingElement == LOSE) {
+		int st = endScreen.getStatus();
+		if (st == 2) return 2;
+		return st;
+	}
 	return 0;
 }
 
