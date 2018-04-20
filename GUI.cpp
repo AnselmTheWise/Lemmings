@@ -361,17 +361,14 @@ void GUI::update(int deltaTime) {
 void GUI::setTime(float currentTime) {
 	int minutes = glm::floor(currentTime / 60000.f);
 	int seconds = glm::floor(currentTime / 1000.f) - (float(minutes)*60.f);
-	cout << "Real minutes: " << minutes << " Real seconds: " << seconds << endl; 
 	
 	int unim = minutes % 10;
 	int decm = glm::floor(minutes/10); 
-	cout << "Minutes" << decm << " unim:" <<  unim << endl; 
 	time3.changeDigit(decm); 
 	time2.changeDigit(unim); 
 	
 	int unis = seconds % 10;
 	int decs = glm::floor(seconds/10);
-	cout << "Seconds: " << decs << " unis: "<< unis << endl; 
 	time1.changeDigit(decs);
 	time0.changeDigit(unis); 
 }
