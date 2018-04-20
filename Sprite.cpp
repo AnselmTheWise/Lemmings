@@ -54,6 +54,10 @@ int Sprite::update(int deltaTime)
 	return frames;
 }
 
+int Sprite::getFrame() {
+	return currentKeyframe;
+}
+
 void Sprite::render() const
 {
 	glm::mat4 modelview = glm::translate(glm::mat4(1.0f), glm::vec3(pos.x, pos.y, 0.f));

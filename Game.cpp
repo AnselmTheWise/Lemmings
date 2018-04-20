@@ -23,6 +23,14 @@ bool Game::update(int deltaTime)
 			scene.init();
 			renderingElement = LEVEL_1;
 		}
+		else if (status == 2) {
+			scene2.init();
+			renderingElement = LEVEL_2;
+		}
+		else if (status == 3) {
+			scene3.init();
+			renderingElement = LEVEL_3;
+		}
 		else if (status == 4) {
 			bPlay = false;
 		}
@@ -34,10 +42,40 @@ bool Game::update(int deltaTime)
 			scene.init();
 		}
 		else if (status == 2) {
-			//Level2 selected
+			scene2.init();
+			renderingElement = LEVEL_2;
+		}
+		else if (status == 4) {
+			mainMenu.init();
+			renderingElement = MAIN_MENU;
+		}
+		else if (status == 5) {
+			bPlay = false;
+		}
+	}
+	else if (renderingElement == LEVEL_2) {
+		scene2.update(deltaTime);
+		int status = scene2.getStatus(); //0-> Executing //1 -> Repeat level //2 -> Level2 //3 -> Level3 //4 -> MainMenu //5 -> Exit
+		if (status == 1) {
+			scene2.init();
 		}
 		else if (status == 3) {
-			//Level3 selected
+			scene3.init();
+			renderingElement = LEVEL_3;
+		}
+		else if (status == 4) {
+			mainMenu.init();
+			renderingElement = MAIN_MENU;
+		}
+		else if (status == 5) {
+			bPlay = false;
+		}
+	}
+	else if (renderingElement == LEVEL_3) {
+		scene3.update(deltaTime);
+		int status = scene2.getStatus(); //0-> Executing //1 -> Repeat level //2 -> Level2 //3 -> Level3 //4 -> MainMenu //5 -> Exit
+		if (status == 1) {
+			scene3.init();
 		}
 		else if (status == 4) {
 			mainMenu.init();
@@ -59,6 +97,12 @@ void Game::render()
 	}
 	else if (renderingElement == LEVEL_1) {
 		scene.render();
+	}
+	else if (renderingElement == LEVEL_2) {
+		scene2.render();
+	}
+	else if (renderingElement == LEVEL_3) {
+		scene3.render();
 	}
 }
 
@@ -100,6 +144,12 @@ void Game::mouseMove(int x, int y)
 	else if (renderingElement == LEVEL_1) {
 		scene.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
 	}
+	else if (renderingElement == LEVEL_2) {
+		scene2.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+	}
+	else if (renderingElement == LEVEL_3) {
+		scene3.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+	}
 }
 
 void Game::mousePress(int button)
@@ -113,6 +163,12 @@ void Game::mousePress(int button)
 		else if (renderingElement == LEVEL_1) {
 			scene.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
 		}
+		else if (renderingElement == LEVEL_2) {
+			scene2.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+		}
+		else if (renderingElement == LEVEL_3) {
+			scene3.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+		}
 	}
 	else if(button == GLUT_RIGHT_BUTTON)
 	{
@@ -122,6 +178,12 @@ void Game::mousePress(int button)
 		}
 		else if (renderingElement == LEVEL_1) {
 			scene.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+		}
+		else if (renderingElement == LEVEL_2) {
+			scene2.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
+		}
+		else if (renderingElement == LEVEL_3) {
+			scene3.mouseMoved(mouseX, mouseY, bLeftMouse, bRightMouse);
 		}
 	}
 }

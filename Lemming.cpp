@@ -14,12 +14,14 @@
 enum LemmingAnims
 {
 	WALKING_LEFT, WALKING_RIGHT, FALLING_LEFT, FALLING_RIGHT, STOPPING, DIGGING, BASHING_LEFT, BASHING_RIGHT,
-	CLIMBING_LEFT, CLIMBING_RIGHT, EXITING
+	CLIMBING_LEFT, CLIMBING_RIGHT, BUILDING_LEFT, BUILDING_RIGHT, PLACING_PORTAL_LEFT, PLACING_PORTAL_RIGHT, 
+	ORANGE_PORTAL, BLUE_PORTAL, EXITING
 };
 
 
 void Lemming::init(const glm::vec2 &initialPosition, ShaderProgram &shaderProgram)
 {
+	shader = shaderProgram;
 	state = FALLING_RIGHT_STATE;
 	spritesheet.loadFromFile("images/lemming.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	spritesheet.setMinFilter(GL_NEAREST);
@@ -105,15 +107,46 @@ void Lemming::init(const glm::vec2 &initialPosition, ShaderProgram &shaderProgra
 	climbingSprite->setNumberAnimations(16);
 
 	climbingSprite->setAnimationSpeed(CLIMBING_RIGHT, 24);
-	for (int i = 0; i<16; i++)
-		climbingSprite->addKeyframe(DIGGING, glm::vec2(float(i) / 16, 0.0f));
+	for (int i = 0; i<8; i++)
+		climbingSprite->addKeyframe(CLIMBING_RIGHT, glm::vec2(float(i) / 16, 0.0f));
 
 	climbingSprite->setAnimationSpeed(CLIMBING_LEFT, 24);
 	for (int i = 0; i<16; i++)
 		climbingSprite->addKeyframe(CLIMBING_LEFT, glm::vec2(float(i) / 16, 0.5f));
 
-	climbingSprite->changeAnimation(CLIMBING_LEFT);
+	climbingSprite->changeAnimation(CLIMBING_RIGHT);
 	climbingSprite->setPosition(initialPosition);
+
+	buildingSpritesheet.loadFromFile("images/builder2.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	buildingSpritesheet.setMinFilter(GL_NEAREST);
+	buildingSpritesheet.setMagFilter(GL_NEAREST);
+	buildingSprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.0625f, 0.5f), &buildingSpritesheet, &shaderProgram);
+	buildingSprite->setNumberAnimations(16);
+
+	buildingSprite->setAnimationSpeed(BUILDING_RIGHT, 24);
+	for (int i = 0; i<16; i++)
+		buildingSprite->addKeyframe(BUILDING_RIGHT, glm::vec2(float(i) / 16, 0.0f));
+
+	buildingSprite->setAnimationSpeed(BUILDING_LEFT, 24);
+	for (int i = 15; i>=0; i--)
+		buildingSprite->addKeyframe(BUILDING_LEFT, glm::vec2(float(i) / 16, 0.5f));
+
+	buildingSprite->changeAnimation(BUILDING_RIGHT);
+	buildingSprite->setPosition(initialPosition);
+
+	portalPlacingSprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(0.0625f, 0.5f), &buildingSpritesheet, &shaderProgram);
+	portalPlacingSprite->setNumberAnimations(16);
+
+	portalPlacingSprite->setAnimationSpeed(PLACING_PORTAL_RIGHT, 24);
+	for (int i = 0; i<16; i++)
+		portalPlacingSprite->addKeyframe(PLACING_PORTAL_RIGHT, glm::vec2(float(i) / 16, 0.0f));
+
+	portalPlacingSprite->setAnimationSpeed(PLACING_PORTAL_LEFT, 24);
+	for (int i = 15; i >= 0; i--)
+		portalPlacingSprite->addKeyframe(PLACING_PORTAL_LEFT, glm::vec2(float(i) / 16, 0.5f));
+
+	portalPlacingSprite->changeAnimation(PLACING_PORTAL_RIGHT);
+	portalPlacingSprite->setPosition(initialPosition);
 
 	exitSpritesheet.loadFromFile("images/exitLemming.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	exitSpritesheet.setMinFilter(GL_NEAREST);
@@ -126,6 +159,11 @@ void Lemming::init(const glm::vec2 &initialPosition, ShaderProgram &shaderProgra
 
 	exitSprite->changeAnimation(EXITING);
 	exitSprite->setPosition(initialPosition);
+
+	woodTexture.loadFromFile("images/wood.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	woodTexture.setMinFilter(GL_NEAREST);
+	woodTexture.setMagFilter(GL_NEAREST);
+
 	spritesheetIQ.loadFromFile("images/lemmingUI.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	spritesheetIQ.setMinFilter(GL_NEAREST);
 	spritesheetIQ.setMagFilter(GL_NEAREST);
@@ -138,6 +176,9 @@ void Lemming::init(const glm::vec2 &initialPosition, ShaderProgram &shaderProgra
 	interactiveQuad->setOffsetHover(glm::vec2(1./3., 0.f));
 	interactiveQuad->setOffsetClick(glm::vec2(2. / 3., 0.f));
 	fallingConsec = 0;
+	upped = false;
+	bluePortalSpritesheet.loadFromFile("images/bluePortal.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	orangePortalSpritesheet.loadFromFile("images/orangePortal.png", TEXTURE_PIXEL_FORMAT_RGBA);
 }
 
 void Lemming::update(int deltaTime)
@@ -271,7 +312,7 @@ void Lemming::update(int deltaTime)
 	case BASHING_LEFT_STATE:
 		sprite->position() += glm::vec2(-4, -1);
 		interactiveQuad->position() += glm::vec2(-4, -1);
-		if (!collisionTest("left", 8))
+		if (!collisionTestHigh("left", 18))
 		{
 			sprite->position() -= glm::vec2(-4, -1);
 			interactiveQuad->position() -= glm::vec2(-4, -1);
@@ -308,7 +349,7 @@ void Lemming::update(int deltaTime)
 	case BASHING_RIGHT_STATE:
 		sprite->position() += glm::vec2(4, -1);
 		interactiveQuad->position() += glm::vec2(4, -1);
-		if (!collisionTest("right", 8))
+		if (!collisionTestHigh("right", 18))
 		{
 			sprite->position() -= glm::vec2(4, -1);
 			interactiveQuad->position() -= glm::vec2(4, -1);
@@ -352,10 +393,12 @@ void Lemming::update(int deltaTime)
 		}
 		sprite->position() += glm::vec2(-1, -1);
 		interactiveQuad->position() += glm::vec2(-1, -1);
-		if (collision() && canClimb("left"))
+		if (collisionTestHigh("left", 8))
 		{
 			state = CLIMBING_LEFT_STATE;
 			climbingSprite->changeAnimation(CLIMBING_LEFT);
+			sprite->position() -= glm::vec2(-1, -1);
+			interactiveQuad->position() -= glm::vec2(-1, -1);
 		}
 		else
 		{
@@ -384,24 +427,167 @@ void Lemming::update(int deltaTime)
 		}
 		sprite->position() += glm::vec2(1, -1);
 		interactiveQuad->position() += glm::vec2(1, -1);
-		if (collision() && canClimb("right"))
+		if (collisionTestHigh("right", 8))
 		{
 			state = CLIMBING_RIGHT_STATE;
 			climbingSprite->changeAnimation(CLIMBING_RIGHT);
+			sprite->position() -= glm::vec2(1, -1);
+			interactiveQuad->position() -= glm::vec2(1, -1);
 		}
 		else
 		{
+			cout << "No collision at my right" << endl;
 			fall = collisionFloor(3);
-			if (fall < 3) {
-				sprite->position() += glm::vec2(0, fall);
-				interactiveQuad->position() += glm::vec2(0, fall);
+			if (fall > 0) {
+				sprite->position() += glm::vec2(0, 1);
+				interactiveQuad->position() += glm::vec2(0, 1);
+			}
+			if (fall > 1) {
+				sprite->position() += glm::vec2(0, 1);
+				interactiveQuad->position() += glm::vec2(0, 1);
+			}
+			if (fall > 2) {
+				state = FALLING_RIGHT_STATE;
+				fallingSprite->changeAnimation(FALLING_RIGHT);
+			}
+			if (fall == 0) {
+				cout << "And next pixel is above" << endl;
+			}
+		}
+		break;
+	case CLIMBING_LEFT_STATE:
+		climbingSprite->update(deltaTime);
+		if (!collisionHandLevel("left")) {
+			if (canClimb("left")) {
+				//Final climb
+				sprite->position() += glm::vec2(-6, -8);
+				interactiveQuad->position() += glm::vec2(-1, -8);
+				state = WALKING_LEFT_STATE;
+				sprite->changeAnimation(WALKING_LEFT);
 			}
 			else {
+				state = FALLING_LEFT_STATE;
+				fallingSprite->changeAnimation(FALLING_LEFT);
+			}
+		}
+		else if (collisionHeadLevel("left")) {
+			state = FALLING_LEFT_STATE;
+			fallingSprite->changeAnimation(FALLING_LEFT);
+		}
+		else {
+			//Still climb
+			sprite->position() += glm::vec2(0, -1);
+			interactiveQuad->position() += glm::vec2(0, -1);
+			climbingSprite->changeAnimation(CLIMBING_LEFT);
+		}
+		break;
+	case CLIMBING_RIGHT_STATE:
+		climbingSprite->update(deltaTime);
+		if (!collisionHandLevel("right")) {
+			cout << "No collision in hand level" << endl;
+			if (canClimb("right")) {
+				cout << "Can climb to the top" << endl;
+				//Final climb
+				sprite->position() += glm::vec2(6, -8);
+				interactiveQuad->position() += glm::vec2(1, -8);
+				state = WALKING_RIGHT_STATE;
+				sprite->changeAnimation(WALKING_RIGHT);
+			}
+			else {
+				cout << "Can't climb to the top, falling" << endl;
 				state = FALLING_RIGHT_STATE;
 				fallingSprite->changeAnimation(FALLING_RIGHT);
 			}
 		}
+		else if (collisionHeadLevel("right")) {
+			cout << "Collision with head level, falling" << endl;
+			state = FALLING_RIGHT_STATE;
+			fallingSprite->changeAnimation(FALLING_RIGHT);
+		}
+		else {
+			//Still climb
+			cout << "No conflicts at all, climbing" << endl;
+			sprite->position() += glm::vec2(0, -1);
+			interactiveQuad->position() += glm::vec2(0, -1);
+			climbingSprite->changeAnimation(CLIMBING_RIGHT);
+		}
 		break;
+	case BUILDING_LEFT_STATE:
+		if (woodCount == 13) {
+			state = WALKING_LEFT_STATE;
+			sprite->position() += glm::vec2(2, -2);
+			sprite->changeAnimation(WALKING_LEFT);
+		}
+		else {
+			buildingSprite->update(deltaTime);
+			if (buildingSprite->getFrame() == 15 && !upped) {
+				sprite->position() += glm::vec2(-2, -1);
+				upped = true;
+			}
+			else if (buildingSprite->getFrame() != 15) {
+				upped = false;
+			}
+			if (buildingSprite->getFrame() == 9) {
+				Sprite* newWood = Sprite::createSprite(glm::ivec2(4, 1), glm::vec2(1, 1), &woodTexture, &shader);
+				newWood->setNumberAnimations(1);
+				newWood->setAnimationSpeed(WOOD, 24);
+				newWood->addKeyframe(WOOD, glm::vec2(0.0f, 0.0f));
+				newWood->changeAnimation(WOOD);
+				glm::vec2 woodPos = sprite->position() + glm::vec2(2, 13);
+				newWood->setPosition(woodPos);
+				woods.push_back(newWood);
+				buildWood(woodPos);
+				++woodCount;
+			}
+		}
+		break;
+	case BUILDING_RIGHT_STATE:
+		if (woodCount == 13) {
+			state = WALKING_RIGHT_STATE;
+			sprite->position() += glm::vec2(2, -2);
+			sprite->changeAnimation(WALKING_RIGHT);
+		}
+		else {
+			buildingSprite->update(deltaTime);
+			if (buildingSprite->getFrame() == 15 && !upped) {
+				sprite->position() += glm::vec2(2, -1);
+				upped = true;
+			}
+			else if (buildingSprite->getFrame() != 15) {
+				upped = false;
+			}
+			if (buildingSprite->getFrame() == 9) {
+				Sprite* newWood = Sprite::createSprite(glm::ivec2(4, 1), glm::vec2(1, 1), &woodTexture, &shader);
+				newWood->setNumberAnimations(1);
+				newWood->setAnimationSpeed(WOOD, 24);
+				newWood->addKeyframe(WOOD, glm::vec2(0.0f, 0.0f));
+				newWood->changeAnimation(WOOD);
+				glm::vec2 woodPos = sprite->position() + glm::vec2(9, 13);
+				newWood->setPosition(woodPos);
+				woods.push_back(newWood);
+				buildWood(woodPos);
+				++woodCount;
+			}
+			break;
+	case PLACING_PORTAL_LEFT_STATE:
+		portalPlacingSprite->update(deltaTime);
+		if (portalPlacingSprite->getFrame() == 9) {
+			placePortal("left");
+		}
+		else if (portalPlacingSprite->getFrame() == 15) {
+			state = WALKING_LEFT_STATE;
+		}
+		break;
+	case PLACING_PORTAL_RIGHT_STATE:
+		portalPlacingSprite->update(deltaTime);
+		if (portalPlacingSprite->getFrame() == 9) {
+			placePortal("right");
+		}
+		else if (portalPlacingSprite->getFrame() == 15) {
+			state = WALKING_RIGHT_STATE;
+		}
+		break;
+		}
 	}
 	exitSprite->position() = sprite->position();
 	fallingSprite->position() = sprite->position();
@@ -409,6 +595,7 @@ void Lemming::update(int deltaTime)
 	diggingSprite->position() = sprite->position();
 	bashingSprite->position() = sprite->position();
 	climbingSprite->position() = sprite->position();
+	buildingSprite->position() = sprite->position();
 	interactiveQuad->position() = sprite->position();
 }
 
@@ -427,30 +614,97 @@ bool Lemming::setPower(int power) {
 		}
 	}
 	else if (power == 2) {
-		if (state != FALLING_LEFT_STATE && state != FALLING_RIGHT_STATE) { //Check if collision
-			if (state == WALKING_LEFT_STATE) {
+		if (state != FALLING_LEFT_STATE && state != FALLING_RIGHT_STATE) {
+			if (state == WALKING_LEFT_STATE && collisionTestHigh("left", 18)) {
 				state = BASHING_LEFT_STATE;
 				bashingSprite->changeAnimation(BASHING_LEFT);
+				return true;
 			}
-			else if (state == WALKING_RIGHT_STATE) {
+			else if (state == WALKING_RIGHT_STATE && collisionTestHigh("right", 18)) {
 				state = BASHING_RIGHT_STATE;
 				bashingSprite->changeAnimation(BASHING_RIGHT);
+				return true;
 			}
-			return true;
 		}
 	}
 	else if (power == 3) {
 		if (state != FALLING_LEFT_STATE && state != FALLING_RIGHT_STATE) {
 			if (state == WALKING_RIGHT_STATE) {
-				if (collisionTest("right", 8)) {
+				if (collisionTestHigh("right", 18)) {
 					state = WALKING_RIGHT_TO_CLIMB_STATE;
+					return true;
 				}
 			}
 			else if (state == WALKING_LEFT_STATE) {
-				if (collisionTest("left", 8)) {
+				if (collisionTestHigh("left", 18)) {
 					state = WALKING_LEFT_TO_CLIMB_STATE;
+					return true;
 				}
 			}
+		}
+	}
+	else if (power == 4) {
+		if (state != FALLING_LEFT_STATE && state != FALLING_RIGHT_STATE) {
+			woodCount = 0;
+			if (state == WALKING_RIGHT_STATE) {
+				state = BUILDING_RIGHT_STATE;
+				buildingSprite->changeAnimation(BUILDING_RIGHT);
+				Sprite* newWood = Sprite::createSprite(glm::ivec2(4, 1), glm::vec2(1, 1), &woodTexture, &shader);
+				newWood->setNumberAnimations(1);
+				newWood->setAnimationSpeed(WOOD, 24);
+				newWood->addKeyframe(WOOD, glm::vec2(0.0f, 0.0f));
+				newWood->changeAnimation(WOOD);
+				glm::vec2 woodPos = sprite->position() + glm::vec2(7, 14);
+				newWood->setPosition(woodPos);
+				woods.push_back(newWood);
+				buildWood(woodPos);
+				Sprite* newerWood = Sprite::createSprite(glm::ivec2(4, 1), glm::vec2(1, 1), &woodTexture, &shader);
+				newerWood->setNumberAnimations(1);
+				newerWood->setAnimationSpeed(WOOD, 24);
+				newerWood->addKeyframe(WOOD, glm::vec2(0.0f, 0.0f));
+				newerWood->changeAnimation(WOOD);
+				woodPos = sprite->position() + glm::vec2(5, 15);
+				newerWood->setPosition(woodPos);
+				woods.push_back(newerWood);
+				buildWood(woodPos);
+				return true;
+			}
+			else if (state == WALKING_LEFT_STATE) {
+				state = BUILDING_LEFT_STATE;
+				buildingSprite->changeAnimation(BUILDING_LEFT);
+				Sprite* newWood = Sprite::createSprite(glm::ivec2(4, 1), glm::vec2(1, 1), &woodTexture, &shader);
+				newWood->setNumberAnimations(1);
+				newWood->setAnimationSpeed(WOOD, 24);
+				newWood->addKeyframe(WOOD, glm::vec2(0.0f, 0.0f));
+				newWood->changeAnimation(WOOD);
+				glm::vec2 woodPos = sprite->position() + glm::vec2(0, 14);
+				newWood->setPosition(woodPos);
+				woods.push_back(newWood);
+				buildWood(woodPos);
+				Sprite* newerWood = Sprite::createSprite(glm::ivec2(4, 1), glm::vec2(1, 1), &woodTexture, &shader);
+				newerWood->setNumberAnimations(1);
+				newerWood->setAnimationSpeed(WOOD, 24);
+				newerWood->addKeyframe(WOOD, glm::vec2(0.0f, 0.0f));
+				newerWood->changeAnimation(WOOD);
+				woodPos = sprite->position() + glm::vec2(2, 15);
+				newerWood->setPosition(woodPos);
+				woods.push_back(newerWood);
+				buildWood(woodPos);
+				return true;
+			}
+		}
+	}
+	else if (power == 8) {
+		if (state != FALLING_LEFT_STATE && state != FALLING_RIGHT_STATE) {
+			if (state == WALKING_RIGHT) {
+				state = PLACING_PORTAL_RIGHT_STATE;
+				portalPlacingSprite->changeAnimation(PLACING_PORTAL_RIGHT);
+			}
+			else if (state == WALKING_LEFT) {
+				state = PLACING_PORTAL_LEFT_STATE;
+				portalPlacingSprite->changeAnimation(PLACING_PORTAL_LEFT);
+			}
+			return true;
 		}
 	}
 	return false;
@@ -478,10 +732,34 @@ void Lemming::render()
 	else if (state == BASHING_RIGHT_STATE || state == BASHING_LEFT_STATE) {
 		bashingSprite->render();
 	}
+	else if (state == CLIMBING_RIGHT_STATE || state == CLIMBING_LEFT_STATE) {
+		if (state == CLIMBING_RIGHT_STATE) {
+			climbingSprite->position().x += 5;
+			climbingSprite->render();
+			climbingSprite->position().x -= 5;
+		}
+		else {
+			climbingSprite->position().x += -5;
+			climbingSprite->render();
+			climbingSprite->position().x -= -5;
+		}
+	}
+	else if (state == BUILDING_RIGHT_STATE || state == BUILDING_LEFT_STATE) {
+		buildingSprite->render();
+	}
+	else if (state == PLACING_PORTAL_RIGHT || state == PLACING_PORTAL_LEFT) {
+		portalPlacingSprite->render();
+	}
 	else {
 		sprite->render();
 	}
 	interactiveQuad->render();
+	for (int i = 0; i < woods.size(); ++i) {
+		woods[i]->render();
+	}
+	for (int i = 0; i < portals.size(); ++i) {
+		portals[i]->render();
+	}
 }
 
 void Lemming::setMapMask(VariableTexture *mapMask)
@@ -567,11 +845,93 @@ bool Lemming::collisionTest(string way, int dist)
 	return false;
 }
 
-bool Lemming::canClimb(string way) {
+bool Lemming::collisionTestHigh(string way, int dist)
+{
+	glm::ivec2 posBase = sprite->position() + glm::vec2(120, 0); // Add the map displacement
+	posBase += glm::ivec2(7, 14); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	if (way == "right") {
+		for (int i = posBase.x; i < posBase.x + dist; ++i) {
+			if (mask->pixel(i, posBase.y) == 255) return true;
+		}
+	}
+	else if (way == "left") {
+		for (int i = posBase.x; i > posBase.x - dist; --i) {
+			if (mask->pixel(i, posBase.y) == 255) return true;
+		}
+	}
+	posBase = sprite->position() + glm::vec2(120, 0);
+	posBase += glm::ivec2(7, 15);
+	if (way == "right") {
+		for (int i = posBase.x; i < posBase.x + dist; ++i) {
+			if (mask->pixel(i, posBase.y) == 255) return true;
+		}
+	}
+	else if (way == "left") {
+		for (int i = posBase.x; i > posBase.x - dist; --i) {
+			if (mask->pixel(i, posBase.y) == 255) return true;
+		}
+	}
 	return false;
 }
 
+bool Lemming::collisionHandLevel(string way) {
+	glm::ivec2 posBase = sprite->position() + glm::vec2(120, 0); // Add the map displacement
+	if (way == "right") posBase += glm::ivec2(17, 8); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	else if (way == "left") posBase += glm::ivec2(-1, 8);
+	if (mask->pixel(posBase.x, posBase.y) == 255) return true;
+	return false;
+}
 
+bool Lemming::collisionHeadLevel(string way) {
+	glm::ivec2 posBase = sprite->position() + glm::vec2(120, 0); // Add the map displacement
+	if (way == "right") posBase += glm::ivec2(14, -1); //!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+	else if (way == "left") posBase += glm::ivec2(0, -1);
+	if (mask->pixel(posBase.x, posBase.y) == 255) return true;
+	return false;
+}
 
+bool Lemming::canClimb(string way) {
+	glm::ivec2 posBase = sprite->position() + glm::vec2(120, 0); // Add the map displacement
+	if (way == "right") {
+		posBase += glm::ivec2(17, 8);
+		for (int i = posBase.x; i < posBase.x + 6; ++i) {
+			for (int j = posBase.y; j < posBase.y + 16; ++j) {
+				if (mask->pixel(posBase.x, posBase.y) == 255) return false;
+			}
+		}
+	}
+	if (way == "left") {
+		posBase += glm::ivec2(-1, 8);
+		for (int i = posBase.x; i > posBase.x - 1; --i) {
+			for (int j = posBase.y; j < posBase.y + 16; ++j) {
+				if (mask->pixel(posBase.x, posBase.y) == 255) return false;
+			}
+		}
+	}
+	return true;
+}
 
+void Lemming::buildWood(glm::vec2 pos) {
+	for (int i = pos.x + 120; i < pos.x + 4 + 120; ++i) {
+		mask->setPixel(i, pos.y, 255);
+	}
+}
 
+void Lemming::placePortal(string way) {
+	Sprite* portalSprite = Sprite::createSprite(glm::ivec2(4, 16), glm::vec2(0.25, 1), &bluePortalSpritesheet, &shader);
+	portalSprite->setNumberAnimations(16);
+	portalSprite->setAnimationSpeed(BLUE_PORTAL, 4);
+	for (int i = 0; i<4; i++)
+		exitSprite->addKeyframe(BLUE_PORTAL, glm::vec2(float(i) / 4., 0.0f));
+	portalSprite->changeAnimation(BLUE_PORTAL);
+	if (way == "right") {
+		portalSprite->position() = glm::vec2(sprite->position().x + 16, sprite->position().y);
+	}
+	else if (way == "left") {
+		portalSprite->position() = glm::vec2(sprite->position().x - 4, sprite->position().y);
+	}
+}
+
+void Lemming::setScenePortalPos(glm::vec2 portalPos) {
+	scenePortalPos = portalPos;
+}

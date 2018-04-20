@@ -67,7 +67,8 @@ void Scene::init()
 	renderingElement = SCENE;
 	selectedLemming = -1;
 	buttonClicked = -1;
-	powersLeft = { 0, 1, 1, 0, 0, 0 };
+	powersLeft = { 10, 10, 10, 10, 10, 0 };
+	interface1.updatePowers(powersLeft);
 	interface1.lemmingsLeft(lemmingsToArrive);
 	interface1.maxTime(2 * 60 * 1000);
 	interface1.setLevel(1);
@@ -116,7 +117,7 @@ void Scene::update(int deltaTime)
 					renderingElement = LOSE;
 					endScreen.init("Lose");
 				}
-				if (nLemmings == 0 && lemmingsArrived > lemmingsToArrive) {
+				if ((nLemmings == 0 || currentTime > 2*60*1000) && lemmingsArrived > lemmingsToArrive) {
 					renderingElement = WIN;
 					endScreen.init("Win");
 				}
