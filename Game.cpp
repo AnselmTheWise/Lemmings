@@ -24,6 +24,7 @@ bool Game::update(int deltaTime)
 			renderingElement = LEVEL_1;
 		}
 		else if (status == 2) {
+			cout << "Scene 2" << endl;
 			scene2.init();
 			renderingElement = LEVEL_2;
 		}

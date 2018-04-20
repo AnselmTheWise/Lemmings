@@ -31,10 +31,10 @@ void Scene3::init()
 	initShaders();
 
 	map = MaskedTexturedQuad::createTexturedQuad(geom, texCoords, maskedTexProgram);
-	colorTexture.loadFromFile("images/fun1.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	colorTexture.loadFromFile("images/fun3.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	colorTexture.setMinFilter(GL_NEAREST);
 	colorTexture.setMagFilter(GL_NEAREST);
-	maskTexture.loadFromFile("images/fun1_mask.png", TEXTURE_PIXEL_FORMAT_L);
+	maskTexture.loadFromFile("images/fun3_mask.png", TEXTURE_PIXEL_FORMAT_L);
 	maskTexture.setMinFilter(GL_NEAREST);
 	maskTexture.setMagFilter(GL_NEAREST);
 
@@ -62,16 +62,16 @@ void Scene3::init()
 		exitSprite->addKeyframe(EXIT_FIRE, glm::vec2(float(i) / 6.f, 0.f));
 	}
 	exitSprite->changeAnimation(EXIT_FIRE);
-	exitSprite->position() = glm::vec2(220, 105);
+	exitSprite->position() = glm::vec2(240, 100);
 	lastTimeLemmingSpawned = 0;
 	renderingElement = SCENE;
 	selectedLemming = -1;
 	buttonClicked = -1;
-	powersLeft = { 10, 10, 10, 10, 10, 0 };
+	powersLeft = { 1, 1, 0, 1, 2, 1 };
 	interface1.updatePowers(powersLeft);
 	interface1.lemmingsLeft(lemmingsToArrive);
-	interface1.maxTime(2 * 60 * 1000);
-	interface1.setLevel(1);
+	interface1.maxTime(5 * 60 * 1000);
+	interface1.setLevel(3);
 	score = 0;
 	clearLemmings();
 }
@@ -93,6 +93,7 @@ void Scene3::update(int deltaTime)
 			Lemming* lemming = new Lemming();
 			lemming->init(entrance, simpleTexProgram);
 			lemming->setMapMask(&maskTexture);
+			lemming->setExit(glm::vec2(240, 100));
 			lemmings.push_back(lemming);
 			lastTimeLemmingSpawned = currentTime;
 			++lemmingsSpawned; ++nLemmings;
@@ -127,13 +128,13 @@ void Scene3::update(int deltaTime)
 			entranceSprite->update(deltaTime);
 		}
 		exitSprite->update(deltaTime);
-		if (2 * 60 * 1000 - currentTime < 0) {
+		if (5 * 60 * 1000 - currentTime < 0) {
 			lost = true;
 			renderingElement = LOSE;
 			endScreen.init("Lose");
 		}
 		else {
-			interface1.setTime(2 * 60 * 1000 - currentTime);
+			interface1.setTime(5 * 60 * 1000 - currentTime);
 		}
 	}
 }

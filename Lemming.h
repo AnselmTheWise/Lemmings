@@ -28,6 +28,8 @@ public:
 	bool setPower(int power); //0 -> Stopper //1 -> Digger
 
 	bool isClicked();
+
+	void setExit(glm::vec2 exitPos);
 	
 private:
 	int collisionFloor(int maxFall);
@@ -47,15 +49,15 @@ private:
 private:
 	enum LemmingState
 	{
-		WALKING_LEFT_STATE, WALKING_RIGHT_STATE, FALLING_LEFT_STATE, FALLING_RIGHT_STATE, STOPPING_STATE, DIGGING_STATE, 
+		WALKING_LEFT_STATE, WALKING_RIGHT_STATE, FALLING_LEFT_STATE, FALLING_RIGHT_STATE, STOPPING_STATE, DIGGING_STATE,
 		BASHING_LEFT_STATE, BASHING_RIGHT_STATE, CLIMBING_LEFT_STATE, CLIMBING_RIGHT_STATE, WALKING_LEFT_TO_CLIMB_STATE,
 		WALKING_RIGHT_TO_CLIMB_STATE, BUILDING_LEFT_STATE, BUILDING_RIGHT_STATE, EXITING_STATE, PLACING_PORTAL_LEFT_STATE,
-		PLACING_PORTAL_RIGHT_STATE, WOOD
+		PLACING_PORTAL_RIGHT_STATE, WOOD, EXPLODING_STATE
 	};
 
 	LemmingState state;
 	Texture spritesheet, spritesheetIQ, exitSpritesheet, fallingSpritesheet, stoppingSpritesheet, diggingSpritesheet, bashingSpritesheet,
-		climbingSpritesheet, buildingSpritesheet, woodTexture, orangePortalSpritesheet, bluePortalSpritesheet;
+		climbingSpritesheet, buildingSpritesheet, woodTexture, orangePortalSpritesheet, bluePortalSpritesheet, explodingSpritesheet;
 	Sprite *sprite;
 	Sprite *exitSprite;
 	Sprite *fallingSprite;
@@ -65,6 +67,7 @@ private:
 	Sprite *climbingSprite;
 	Sprite *buildingSprite;
 	Sprite *portalPlacingSprite;
+	Sprite *explodingSprite;
 	InteractiveQuad *interactiveQuad;
 	VariableTexture *mask;
 

@@ -92,6 +92,7 @@ void Scene::update(int deltaTime)
 		if (lemmingsSpawned < lemmingsToSpawn && currentTime >(24.f / 30.f) * 1000 && currentTime - lastTimeLemmingSpawned > 2000) {
 			Lemming* lemming = new Lemming();
 			lemming->init(entrance, simpleTexProgram);
+			lemming->setExit(glm::vec2(238.5f, 121.5f));
 			lemming->setMapMask(&maskTexture);
 			lemmings.push_back(lemming);
 			lastTimeLemmingSpawned = currentTime;
@@ -196,7 +197,8 @@ void Scene::mouseMoved(int mouseX, int mouseY, bool bLeftButton, bool bRightButt
 		if (bt != -1) {
 			buttonClicked = bt;
 		}
-		if (buttonClicked > -1 && buttonClicked < 5 && selectedLemming >= 0 && selectedLemming < lemmings.size() && powersLeft[buttonClicked] > 0) {
+		if (buttonClicked == 8) buttonClicked = 5;
+		if (buttonClicked > -1 && buttonClicked < 6 && selectedLemming >= 0 && selectedLemming < lemmings.size() && powersLeft[buttonClicked] > 0) {
 			bool success = lemmings[selectedLemming]->setPower(buttonClicked);
 			if (success) {
 				--powersLeft[buttonClicked];

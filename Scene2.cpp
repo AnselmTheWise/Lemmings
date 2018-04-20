@@ -20,7 +20,7 @@ Scene2::~Scene2()
 void Scene2::init()
 {
 	lemmingsToSpawn = 10;
-	lemmingsToArrive = 5;
+	lemmingsToArrive = 8;
 	lemmingsSpawned = lemmingsArrived = nLemmings = 0;
 
 	interface1.init();
@@ -29,18 +29,17 @@ void Scene2::init()
 	glm::vec2 texCoords[2] = { glm::vec2(120.f / 512.0, 0.f), glm::vec2((120.f + 320.f) / 512.0f, 160.f / 256.0f) };
 
 	initShaders();
-
 	map = MaskedTexturedQuad::createTexturedQuad(geom, texCoords, maskedTexProgram);
-	colorTexture.loadFromFile("images/fun1.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	colorTexture.loadFromFile("images/fun2.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	colorTexture.setMinFilter(GL_NEAREST);
 	colorTexture.setMagFilter(GL_NEAREST);
-	maskTexture.loadFromFile("images/fun1_mask.png", TEXTURE_PIXEL_FORMAT_L);
+	maskTexture.loadFromFile("images/fun2_mask.png", TEXTURE_PIXEL_FORMAT_L);
 	maskTexture.setMinFilter(GL_NEAREST);
 	maskTexture.setMagFilter(GL_NEAREST);
 
 	projection = glm::ortho(0.f, float(CAMERA_WIDTH - 1), float(CAMERA_HEIGHT - 1), 0.f);
 	currentTime = 0.0f;
-	entrance = glm::vec2(60, 30);
+	entrance = glm::vec2(25, 15);
 	entranceSpritesheet.loadFromFile("images/spawndoor.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	entranceSpritesheet.setMinFilter(GL_NEAREST);
 	entranceSpritesheet.setMagFilter(GL_NEAREST);
@@ -62,16 +61,16 @@ void Scene2::init()
 		exitSprite->addKeyframe(EXIT_FIRE, glm::vec2(float(i) / 6.f, 0.f));
 	}
 	exitSprite->changeAnimation(EXIT_FIRE);
-	exitSprite->position() = glm::vec2(220, 105);
+	exitSprite->position() = glm::vec2(240, 102);
 	lastTimeLemmingSpawned = 0;
 	renderingElement = SCENE;
 	selectedLemming = -1;
 	buttonClicked = -1;
-	powersLeft = { 10, 10, 10, 10, 10, 0 };
+	powersLeft = { 0, 0, 1, 9, 0, 0 };
 	interface1.updatePowers(powersLeft);
 	interface1.lemmingsLeft(lemmingsToArrive);
-	interface1.maxTime(2 * 60 * 1000);
-	interface1.setLevel(1);
+	interface1.maxTime(3 * 60 * 1000);
+	interface1.setLevel(2);
 	score = 0;
 	clearLemmings();
 }
@@ -93,6 +92,7 @@ void Scene2::update(int deltaTime)
 			Lemming* lemming = new Lemming();
 			lemming->init(entrance, simpleTexProgram);
 			lemming->setMapMask(&maskTexture);
+			lemming->setExit(glm::vec2(250, 102));
 			lemmings.push_back(lemming);
 			lastTimeLemmingSpawned = currentTime;
 			++lemmingsSpawned; ++nLemmings;
@@ -127,13 +127,13 @@ void Scene2::update(int deltaTime)
 			entranceSprite->update(deltaTime);
 		}
 		exitSprite->update(deltaTime);
-		if (2 * 60 * 1000 - currentTime < 0) {
+		if (3 * 60 * 1000 - currentTime < 0) {
 			lost = true;
 			renderingElement = LOSE;
 			endScreen.init("Lose");
 		}
 		else {
-			interface1.setTime(2 * 60 * 1000 - currentTime);
+			interface1.setTime(3 * 60 * 1000 - currentTime);
 		}
 	}
 }

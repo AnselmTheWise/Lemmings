@@ -15,7 +15,7 @@ enum LemmingAnims
 {
 	WALKING_LEFT, WALKING_RIGHT, FALLING_LEFT, FALLING_RIGHT, STOPPING, DIGGING, BASHING_LEFT, BASHING_RIGHT,
 	CLIMBING_LEFT, CLIMBING_RIGHT, BUILDING_LEFT, BUILDING_RIGHT, PLACING_PORTAL_LEFT, PLACING_PORTAL_RIGHT, 
-	ORANGE_PORTAL, BLUE_PORTAL, EXITING
+	ORANGE_PORTAL, BLUE_PORTAL, EXITING, EXPLODING
 };
 
 
@@ -160,6 +160,18 @@ void Lemming::init(const glm::vec2 &initialPosition, ShaderProgram &shaderProgra
 	exitSprite->changeAnimation(EXITING);
 	exitSprite->setPosition(initialPosition);
 
+	explodingSpritesheet.loadFromFile("images/explodingLemming.png", TEXTURE_PIXEL_FORMAT_RGBA);
+	explodingSpritesheet.setMinFilter(GL_NEAREST);
+	explodingSpritesheet.setMagFilter(GL_NEAREST);
+	explodingSprite = Sprite::createSprite(glm::ivec2(16, 16), glm::vec2(1. / 14., 1), &exitSpritesheet, &shaderProgram);
+	explodingSprite->setNumberAnimations(16);
+	explodingSprite->setAnimationSpeed(EXPLODING, 24);
+	for (int i = 0; i<14; i++)
+		explodingSprite->addKeyframe(EXPLODING, glm::vec2(float(i) / 14., 0.0f));
+
+	explodingSprite->changeAnimation(EXPLODING);
+	explodingSprite->setPosition(initialPosition);
+
 	woodTexture.loadFromFile("images/wood.png", TEXTURE_PIXEL_FORMAT_RGBA);
 	woodTexture.setMinFilter(GL_NEAREST);
 	woodTexture.setMagFilter(GL_NEAREST);
@@ -169,7 +181,6 @@ void Lemming::init(const glm::vec2 &initialPosition, ShaderProgram &shaderProgra
 	spritesheetIQ.setMagFilter(GL_NEAREST);
 	yOffset = 3;
 	status = 0;
-	exitDoorPosition = glm::vec2(238.5f, 121.5f);
 	glm::vec2 initPos = initialPosition;
 	interactiveQuad = InteractiveQuad::createInteractiveQuad(glm::vec2(initPos.x, initPos.y + yOffset), glm::vec2(16, 16), glm::vec2(1./3., 1), &spritesheetIQ, &shaderProgram);
 	interactiveQuad->setOffsetIdle(glm::vec2(0.f, 0.f));
@@ -596,6 +607,7 @@ void Lemming::update(int deltaTime)
 	bashingSprite->position() = sprite->position();
 	climbingSprite->position() = sprite->position();
 	buildingSprite->position() = sprite->position();
+	portalPlacingSprite->position() = sprite->position();
 	interactiveQuad->position() = sprite->position();
 }
 
@@ -694,7 +706,7 @@ bool Lemming::setPower(int power) {
 			}
 		}
 	}
-	else if (power == 8) {
+	else if (power == 5) {
 		if (state != FALLING_LEFT_STATE && state != FALLING_RIGHT_STATE) {
 			if (state == WALKING_RIGHT) {
 				state = PLACING_PORTAL_RIGHT_STATE;
@@ -706,6 +718,9 @@ bool Lemming::setPower(int power) {
 			}
 			return true;
 		}
+	}
+	else if (power == 6) {
+		//state = EXPLODING;
 	}
 	return false;
 }
@@ -747,7 +762,7 @@ void Lemming::render()
 	else if (state == BUILDING_RIGHT_STATE || state == BUILDING_LEFT_STATE) {
 		buildingSprite->render();
 	}
-	else if (state == PLACING_PORTAL_RIGHT || state == PLACING_PORTAL_LEFT) {
+	else if (state == PLACING_PORTAL_RIGHT_STATE || state == PLACING_PORTAL_LEFT_STATE) {
 		portalPlacingSprite->render();
 	}
 	else {
@@ -934,4 +949,8 @@ void Lemming::placePortal(string way) {
 
 void Lemming::setScenePortalPos(glm::vec2 portalPos) {
 	scenePortalPos = portalPos;
+}
+
+void Lemming::setExit(glm::vec2 exitPos) {
+	exitDoorPosition = exitPos;
 }
